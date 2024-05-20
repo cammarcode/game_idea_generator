@@ -2,15 +2,15 @@
 <html>
 <head>
     <title>......</title>
-    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="../static/style.css">
 
 </head>
 <body>
     <div class="navbar">
             <p class="navitem" id="navtitle">Game idea generator</p>
-            <a class="navitem" id="navhome">Home</a>
-            <a class="navitem" id="navsignup">Sign up</a>
-            <a class="navitem" id="navlogin">Login</a>
+            <a href="/" class="navitem" id="navhome">Home</a>
+            <a href="/signup" class="navitem" id="navsignup">Sign up</a>
+            <a href="/login" class="navitem" id="navlogin">Login</a>
     </div>
     <main>
         {% block content %}{% endblock%}

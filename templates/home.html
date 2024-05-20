@@ -1,5 +1,18 @@
 {%extends "layout.html" %}
 {% block content %}
-<p class="spacer">hey bud</p>
+<script type = "text/javascript">
+    window.onload = function() {
+        const ting = document.getElementById("test")
+        ting.onclick = function(event) {
+          event.preventDefault();
+          fetch("/process/2", {
+            method: "GET" })}}
+
+
+</script>
+<p class="spacer">{{genre}}</p>
 <h2>{{genre}}</h2>
+<a href="{{ '/results/%s'%settings }}" id="randomize">RANDOMIZE!</a>
+<button id = "test">click this</button>
+<p id="res">a</p>
 {%endblock%}
