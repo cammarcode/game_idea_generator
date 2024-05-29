@@ -1,11 +1,21 @@
+{% if type == "diamond" %}
+{%for i in range(size)%}
+    <pre>{{spacchar*(size-i-1)}}{{chara*(i+1)}}{{chara*(i)}}</pre>
+        
+        {%endfor%}
+{%for i in range(size-1)%}
+    <pre>{{spacchar*(i+1)}}{{chara*(size-1-i)}}{{chara*(size-i-2)}}</pre>
+        {%endfor%}
+{% else %}
 {%for i in range(size)%}
     {% if type == "r" %}
-        {{"*"*(size-i)}}<br>
+        {{chara*(size-i)}}<br>
     {% elif type == "f" %}
-        <pre>{{" "*(size-i-1)}}{{"*"*(i+1)}}</pre>
+        <pre>{{spacchar*(size-i-1)}}{{chara*(i+1)}}</pre>
     {% elif type == "rf" %}
-        <pre>{{" "*(i)}}{{"*"*(size-i)}}</pre>
+        <pre>{{spacchar*(i)}}{{chara*(size-i)}}</pre>
     {% else %}
-    {{"*"*(i+1)}}<br>
+    {{chara*(i+1)}}<br>
     {% endif %}
 {%endfor%}
+{% endif %}

@@ -4,15 +4,28 @@
     window.onload = function() {
         const ting = document.getElementById("test")
         ting.onclick = function(event) {
-          event.preventDefault();
-          fetch("/process/2", {
-            method: "GET" })}}
+            event.preventDefault();
+            fetch("/process/"+ting.innerHTML, {
+                method: "GET" })
+            .then(response => {response.text().then(function (text) {ting.innerHTML = text});}, ting.innerHTML = 0)
+        }}
 
 
 </script>
-<p class="spacer">{{genre}}</p>
-<h2>{{genre}}</h2>
+<p class="spacer">hi</p>
+<div id = "bigcontainer"> 
+    
+    <div id = 'Genrenr' class = 'multicontainer'>
+        <button class="plus"></button>
+    </div>
+    <div id = 'Settingnr' class = 'multicontainer'></div>
+    <div id = 'Mechanicnr' class = 'multicontainer'></div>
+
+</div>
+<h2>{{test}}</h2>
 <a href="{{ '/results/%s'%settings }}" id="randomize">RANDOMIZE!</a>
-<button id = "test">click this</button>
-<p id="res">a</p>
+<button id = "test">0</button>
+
+
+
 {%endblock%}

@@ -7,17 +7,17 @@ db = "gamedb.db"
 
 
 @app.route('/')
-def home():
+def home(): #Homepage, no values loaded in
     conn = sqlite3.connect(db)
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Genre")
+    cur.execute("SELECT * FROM Genre WHERE id = 1")
     genre = cur.fetchall()
     settings = str(random.randint(0, len(genre)-1))
-    return render_template("home.html", genre=genre, settings=settings)
+    return render_template("home.html", genre=genre, settings=settings, test=1)
 
 
-@app.route('/results/<settings>')
-def results(settings):
+@app.route('/results/<settings>') 
+def results(settings): # Settings are a string of letters/numbers which represent: 
     conn = sqlite3.connect(db)
     cur = conn.cursor()
     cur.execute("SELECT * FROM Genre WHERE id = ?", (settings,))
@@ -35,16 +35,18 @@ def signup():
     return render_template("signup.html")
 
 
-@app.route('/triangles/<size>/<type>')
-def triangles(size, type):
-    return render_template("triangles.html", size=int(size), type=type)
+@app.route('/triangles/<size>/<type>/<chara>')
+def triangles(size, type, chara):
+    spacchar = " " * len(chara)
+    return render_template("triangles.html", size=int(size), type=type, chara=chara, spacchar=spacchar)
 
 
 @app.route("/process/<i>")
 def process(i):
     print('hit')
-    test = int(i)+1
-    return render_template("home.html", genre=1, settings=3, test=test)
+    test = int(i)+1      
+    resp = app.make_response(str(test))
+    return resp
 
 
 if __name__ == "__main__":

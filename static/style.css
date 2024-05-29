@@ -1,7 +1,9 @@
 body {
     padding: 0;
     margin: 0;
+    top: 0;
 }
+
 
 .navbar {
     margin: 0;
@@ -18,7 +20,7 @@ body {
 
 .navitem {
     
-    margin: auto;
+    margin: 0;
     color: white;
     text-align: center;
     top: 50%;
@@ -82,5 +84,30 @@ a {
 
 .spacer {
     height:5vh;
+    margin: 0;
 }
 
+#bigcontainer {
+    position: absolute;
+    left: 40vw;
+    top: 5.5vh;
+}
+
+.multicontainer {
+    width: 20vw;
+    position: relative;
+    height: 94.5vh;
+    float: left;
+}
+
+#Mechanicnr {
+    background-color:#EF8181;
+}
+
+#Genrenr {
+    background-color:#9ECE9A;
+}
+
+#Settingnr {
+    background-color:#8ACDEA;
+}
