@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, jsonify, render_template, request
 import sqlite3
 import random
 
@@ -10,10 +10,11 @@ db = "gamedb.db"
 def home(): #Homepage, no values loaded in
     conn = sqlite3.connect(db)
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Genre WHERE id = 1")
-    genre = cur.fetchall()
-    settings = str(random.randint(0, len(genre)-1))
-    return render_template("home.html", genre=genre, settings=settings, test=1)
+    settings = 2
+    genreinfo = ["Genre","Genre","Genre",]
+    settinginfo = ["Genre","Genre","Genre",]
+    mechanicinfo = ["Genre","Genre","Genre",]
+    return render_template("home.html",  settings=settings, test=1, genreinfo=genreinfo, settinginfo=settinginfo, mechanicinfo=mechanicinfo)
 
 
 @app.route('/results/<settings>') 
@@ -41,12 +42,23 @@ def triangles(size, type, chara):
     return render_template("triangles.html", size=int(size), type=type, chara=chara, spacchar=spacchar)
 
 
-@app.route("/process/<i>")
-def process(i):
+#@app.route("/process/<info>")
+#def process(info):
     print('hit')
-    test = int(i)+1      
-    resp = app.make_response(str(test))
+    settings, genreinfo, settinginfo, mechanicinfo = deconstruct(info)      
+    resp = app.make_response(render_template("home.html", settings=settings, test=1, genreinfo=genreinfo, settinginfo=settinginfo, mechanicinfo=mechanicinfo))
     return resp
+
+@app.route('/process', methods=['POST']) 
+def process(): 
+    data = request.get_json() # retrieve the data sent from JavaScript 
+    # process the data using Python code 
+    result = data['value'] * 2
+    return jsonify(result=result) # return the result to JavaScript 
+
+#def deconstruct(info):
+#    print(str(info).split())
+#    return list(map(int,str(info).split()))
 
 
 if __name__ == "__main__":

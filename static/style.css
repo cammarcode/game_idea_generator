@@ -31,8 +31,6 @@ body {
     font-family: 'Lato', sans-serif;
     width: 10%;
     
-    
-    
 }
 
 
@@ -52,8 +50,6 @@ body {
     
 }
 
-/*put hoverable navs above */
-
 #navhome:hover {
     background-color: #3b3b3b;
 }
@@ -64,9 +60,6 @@ body {
     background-color: #497689;
 }
 
-
-/*put unhoverable navs below */
-
 #navtitle {
     padding-top: 0.5vh;
     padding-bottom: 0.5vh;
@@ -74,7 +67,7 @@ body {
     font-size: 4vh;
     background-color:#536B78;
     float: left;
-    width: 30%;
+    width: 35%;
 }
 
 a {
@@ -83,14 +76,13 @@ a {
 }
 
 .spacer {
-    height:5vh;
+    height:5.5vh;
     margin: 0;
 }
 
 #bigcontainer {
-    position: absolute;
-    left: 40vw;
-    top: 5.5vh;
+    float: right;
+    
 }
 
 .multicontainer {
@@ -110,4 +102,14 @@ a {
 
 #Settingnr {
     background-color:#8ACDEA;
+}
+
+.insidetext {
+    font-size: 2vh;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+.storage { /* This is for passing variables from jinja to javascript :) should be invisible */
+    display: none;
 }

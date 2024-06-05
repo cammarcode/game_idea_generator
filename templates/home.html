@@ -1,30 +1,76 @@
 {%extends "layout.html" %}
 {% block content %}
+
+{% macro build_block(things) %} <!--Pass a list to create a block with those elements-->
+    {% for i in things %}
+    <p class="insidetext">{{i}}</p>
+    {%endfor%}
+{% endmacro %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
 <script type = "text/javascript">
-    window.onload = function() {
+    /* window.onload = function() {
         const ting = document.getElementById("test")
+        var settings = document.getElementById("storagesettings").innerHTML
+        var geninfo = document.getElementById("storagegeninfo").innerHTML
+        var setinfo = document.getElementById("storagesetinfo").innerHTML
+        var mecinfo = document.getElementById("storagemecinfo").innerHTML
         ting.onclick = function(event) {
             event.preventDefault();
-            fetch("/process/"+ting.innerHTML, {
-                method: "GET" })
-            .then(response => {response.text().then(function (text) {ting.innerHTML = text});}, ting.innerHTML = 0)
+            fetch("/process/"+settings + " " +  String(Number(geninfo) + 1) + " " + setinfo + " " + mecinfo, {method: "GET" })
+            .then(response => {response.then(function (text) {ting.innerHTML = text});}, ting.innerHTML = 0)
         }}
-
+     */
+     function sendData() { 
+            var value = document.getElementById('input').value; 
+            $.ajax({ 
+                url: '/process', 
+                type: 'POST', 
+                contentType: 'application/json', 
+                data: JSON.stringify({ 'value': value }), 
+                success: function(response) { 
+                    document.getElementById('output').innerHTML = response.result; 
+                }, 
+                error: function(error) { 
+                    console.log(error); 
+                } 
+            }); 
+        } 
+    function switchPage(t1, t2, t3) {  /* t 1,2,3 are below inputs because jinja doesnt work in js */
+        /* Sending: genre amount, settings amount, mechanics amount, */
+        resstring = t1 + t2 + t3
+        window.location.href = "http://127.0.0.1:5000/results/" + resstring;
+    }
+    
 
 </script>
+<p id = "storagesettings" class="storage">{{settings}}</p>
+<p id = "storagegeninfo" class="storage">{{genreinfo|length}}</p>
+<p id = "storagesetinfo" class="storage">{{settinginfo|length}}</p>
+<p id = "storagemecinfo" class="storage">{{mechanicinfo|length}}</p>
 <p class="spacer">hi</p>
+
 <div id = "bigcontainer"> 
     
     <div id = 'Genrenr' class = 'multicontainer'>
-        <button class="plus"></button>
+        {{build_block(genreinfo)}}
+        <button></button>
     </div>
-    <div id = 'Settingnr' class = 'multicontainer'></div>
-    <div id = 'Mechanicnr' class = 'multicontainer'></div>
+    <div id = 'Settingnr' class = 'multicontainer'>
+        {{build_block(settinginfo)}}
+    </div>
+    <div id = 'Mechanicnr' class = 'multicontainer'>
+        {{build_block(mechanicinfo)}}
+    </div>
 
 </div>
+
+<input type="text" id="input"> 
+<button onclick="sendData()">Send Data</button> 
+<div id="output"></div> 
+
 <h2>{{test}}</h2>
 <a href="{{ '/results/%s'%settings }}" id="randomize">RANDOMIZE!</a>
-<button id = "test">0</button>
+<button id = "test">addgenre</button>
 
 
 
