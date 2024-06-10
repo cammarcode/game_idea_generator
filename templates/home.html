@@ -37,7 +37,7 @@
         } 
     function switchPage(t1, t2, t3) {  /* t 1,2,3 are below inputs because jinja doesnt work in js */
         /* Sending: genre amount, settings amount, mechanics amount, */
-        resstring = t1 + t2 + t3
+        resstring = String(t1) + "'n" + String(t2) + "'n" + String(t3)
         window.location.href = "http://127.0.0.1:5000/results/" + resstring;
     }
     
@@ -70,8 +70,7 @@
 
 <h2>{{test}}</h2>
 <a href="{{ '/results/%s'%settings }}" id="randomize">RANDOMIZE!</a>
-<button id = "test">addgenre</button>
-
+<button id = "test" onclick="switchPage({{genreinfo|length}}, {{settinginfo|length}}, {{mechanicinfo|length}})">addgenre</button>
 
 
 {%endblock%}
