@@ -109,7 +109,3 @@ a {
     padding-top: 2%;
     padding-bottom: 2%;
 }
-
-.storage { /* This is for passing variables from jinja to javascript :) should be invisible */
-    display: none;
-}
