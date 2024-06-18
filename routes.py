@@ -27,6 +27,8 @@ def results(settings): # Settings are a string of letters/numbers which represen
     print(genreamount, settingsamount, mechanicamount)
     conn = sqlite3.connect(db)
     cur = conn.cursor()
+    cur.execute("SELECT * FROM Genre WHERE ")
+    options = len(cur.fetchall())
     for i in range(genreamount):
         cur.execute("SELECT * FROM Genre WHERE id = ?", (i+1,))
         result.append(cur.fetchall())

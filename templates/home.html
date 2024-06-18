@@ -8,12 +8,16 @@
 {% endmacro %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
 <script type = "text/javascript">
+    var geninfo = 0
+    var setinfo =0
+    var mecinfo = 0
+
      window.onload = function() {
         document.getElementById("genreplus").innerHTML = '0';
-        var geninfo = {{genreinfo|length}}
-        var setinfo = {{settinginfo|length}}
-        var mecinfo = {{mechanicinfo|length}}
-        document.getElementById("genreplus").innerHTML = '1';
+        geninfo = {{genreinfo|length}} /*infos are lists so take length*/
+        setinfo = {{settinginfo|length}}
+        mecinfo = {{mechanicinfo|length}}
+        document.getElementById("genreplus").innerHTML = geninfo;
         }
      
      function sendData() { 
@@ -39,13 +43,16 @@
     
     }
     function plus(type){
-        document.getElementById("genreplus").innerHTML = '0';
+        
         if(type=="genre"){
-            console.log(geninfo);
+            
             if(geninfo <=9){
                 geninfo += 1;
-                console.log(geninfo);
-                document.getElementById("Genrenr").appendChild(<p class="insidetext">Genre</p>);
+                var child = document.createTextNode("Genre")
+                child.id = "gen"+geninfo
+                
+                document.getElementById("genreplus").innerHTML = geninfo
+                document.getElementById("Genrenr").appendChild(child);
             }
         }
     }
