@@ -14,8 +14,8 @@ def home(): #Homepage, no values loaded in
     cur = conn.cursor()
     settings = 2
     genreinfo = ["Genre","Genre","Genre",]
-    settinginfo = ["Genre","Genre","Genre",]
-    mechanicinfo = ["Genre","Genre","Genre",]
+    settinginfo = ["Setting",]
+    mechanicinfo = ["Mechanic",]
     return render_template("home.html",  settings=settings, test=1, genreinfo=genreinfo, settinginfo=settinginfo, mechanicinfo=mechanicinfo)
 
 
@@ -27,13 +27,10 @@ def results(settings): # Settings are a string of letters/numbers which represen
     print(genreamount, settingsamount, mechanicamount)
     conn = sqlite3.connect(db)
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Genre WHERE ")
-    options = len(cur.fetchall())
-    for i in range(genreamount):
-        cur.execute("SELECT * FROM Genre WHERE id = ?", (i+1,))
-        result.append(cur.fetchall())
-    print(result)
-    return render_template("results.html", results=result)
+    cur.execute("SELECT * FROM Genre") # add conditions here
+    options = cur.fetchall()
+    choice = random.sample(options, genreamount)
+    return render_template("results.html", results=choice)
 
 
 @app.route('/login')
@@ -59,7 +56,9 @@ def process():
     result = data['value'] * 2
     return jsonify(result=result) # return the result to JavaScript 
 
+def Jon_Arbuckle(self, green, hoes):
+    print(self)
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True) 

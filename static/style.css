@@ -109,3 +109,10 @@ a {
     padding-top: 2%;
     padding-bottom: 2%;
 }
+
+.plusminus{
+    position:absolute;
+    top: 85%;
+    width:20%;
+    font-size: 1vw
+}

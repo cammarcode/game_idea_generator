@@ -1,15 +1,16 @@
 {%extends "layout.html" %}
 {% block content %}
 
-{% macro build_block(things) %} <!--Pass a list to create a block with those elements-->
-    {% for i in things %}
-    <p class="insidetext">{{i}}</p>
+{% macro build_block(things, idname) %} <!--Pass a list to create a block with those elements-->
+    {% for i in range(things|length) %}
+    <p class="insidetext" id={{idname + (i+1)|string }}>{{things[i]}}</p>
     {%endfor%}
 {% endmacro %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+
 <script type = "text/javascript">
     var geninfo = 0
-    var setinfo =0
+    var setinfo = 0
     var mecinfo = 0
 
      window.onload = function() {
@@ -17,6 +18,7 @@
         geninfo = {{genreinfo|length}} /*infos are lists so take length*/
         setinfo = {{settinginfo|length}}
         mecinfo = {{mechanicinfo|length}}
+        
         document.getElementById("genreplus").innerHTML = geninfo;
         }
      
@@ -45,32 +47,50 @@
     function plus(type){
         
         if(type=="genre"){
-            
-            if(geninfo <=9){
+            console.log(geninfo)
+            if(geninfo <= 8){
                 geninfo += 1;
-                var child = document.createTextNode("Genre")
+                const child = document.createElement("p")
                 child.id = "gen"+geninfo
-                
+                child.innerHTML = "Genre"
+                child.className =  "insidetext"
+                console.log(child.class)
                 document.getElementById("genreplus").innerHTML = geninfo
                 document.getElementById("Genrenr").appendChild(child);
             }
         }
     }
 
+    function minus(type){
+        if(type=="genre"){
+            console.log(geninfo)
+            if(geninfo > 0){
+                findid = "gen"+geninfo
+                geninfo -= 1;
+                console.log(findid)
+                document.getElementById("genreplus").innerHTML = geninfo
+                console.log(document.getElementById("Genrenr").children)
+                document.getElementById("Genrenr").removeChild(document.getElementById("Genrenr").children[findid]);
+            }
+        }
+    }
+
 </script>
+
 <p class="spacer">hi</p>
 
 <div id = "bigcontainer"> 
     
     <div id = 'Genrenr' class = 'multicontainer'>
-        {{build_block(genreinfo)}}
-        <button id="genreplus" onclick="plus('genre')">gplus</button>
+        {{build_block(genreinfo, 'gen')}}
+        <button id="genreplus" class="plusminus" style="left:20%;" onclick="plus('genre')">gplus</button>
+        <button id="genreminus" class="plusminus" style="right:20%;" onclick="minus('genre')">gminus</button>
     </div>
     <div id = 'Settingnr' class = 'multicontainer'>
-        {{build_block(settinginfo)}}
+        {{build_block(settinginfo , 'set')}}
     </div>
     <div id = 'Mechanicnr' class = 'multicontainer'>
-        {{build_block(mechanicinfo)}}
+        {{build_block(mechanicinfo, 'mec')}}
     </div>
 
 </div>
