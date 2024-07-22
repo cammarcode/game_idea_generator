@@ -59,6 +59,32 @@
                 document.getElementById("Genrenr").appendChild(child);
             }
         }
+        if(type=="genre"){
+            console.log(geninfo)
+            if(geninfo <= 8){
+                geninfo += 1;
+                const child = document.createElement("p")
+                child.id = "gen"+geninfo
+                child.innerHTML = "Genre"
+                child.className =  "insidetext"
+                console.log(child.class)
+                document.getElementById("genreplus").innerHTML = geninfo
+                document.getElementById("Genrenr").appendChild(child);
+            }
+        }
+        if(type=="genre"){
+            console.log(geninfo)
+            if(geninfo <= 8){
+                geninfo += 1;
+                const child = document.createElement("p")
+                child.id = "gen"+geninfo
+                child.innerHTML = "Genre"
+                child.className =  "insidetext"
+                console.log(child.class)
+                document.getElementById("genreplus").innerHTML = geninfo
+                document.getElementById("Genrenr").appendChild(child);
+            }
+        }
     }
 
     function minus(type){
@@ -88,9 +114,13 @@
     </div>
     <div id = 'Settingnr' class = 'multicontainer'>
         {{build_block(settinginfo , 'set')}}
+        <button id="settingsplus" class="plusminus" style="left:20%;" onclick="plus('settings')">splus</button>
+        <button id="settingsminus" class="plusminus" style="right:20%;" onclick="minus('settings')">sminus</button>
     </div>
     <div id = 'Mechanicnr' class = 'multicontainer'>
         {{build_block(mechanicinfo, 'mec')}}
+        <button id="mechanicplus" class="plusminus" style="left:20%;" onclick="plus('mechanic')">mplus</button>
+        <button id="mechanicminus" class="plusminus" style="right:20%;" onclick="minus('mechanic')">mminus</button>
     </div>
 
 </div>
