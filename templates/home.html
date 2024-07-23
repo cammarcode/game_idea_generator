@@ -3,7 +3,7 @@
 
 {% macro build_block(things, idname) %} <!--Pass a list to create a block with those elements-->
     {% for i in range(things|length) %}
-    <p class="insidetext" id={{idname + (i+1)|string }}>{{things[i]}}</p>
+    <p class="insidetext" id={{idname + (i+1)|string }}>{{things[i]}}</p> <!--Dont mind the red, this is fine-->
     {%endfor%}
 {% endmacro %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
@@ -40,7 +40,7 @@
     function switchPage(t1, t2, t3) {  /* t 1,2,3 are below inputs because jinja doesnt work in js - nevermind it does but im keeping this */
         /* Sending: genre amount, settings amount, mechanics amount, */
         resstring = String(t1) + "'n" + String(t2) + "'n" + String(t3)
-        window.location.href = "http://127.0.0.1:5000/results/" + resstring;
+        window.location.href = "http://127.0.0.1:5000/results/" + resstring; 
 
     
     }
@@ -59,30 +59,28 @@
                 document.getElementById("Genrenr").appendChild(child);
             }
         }
-        if(type=="genre"){
-            console.log(geninfo)
-            if(geninfo <= 8){
-                geninfo += 1;
+        if(type=="setting"){
+            if(setinfo <= 8){
+                setinfo += 1;
                 const child = document.createElement("p")
-                child.id = "gen"+geninfo
-                child.innerHTML = "Genre"
+                child.id = "set"+setinfo
+                child.innerHTML = "Setting"
                 child.className =  "insidetext"
                 console.log(child.class)
-                document.getElementById("genreplus").innerHTML = geninfo
-                document.getElementById("Genrenr").appendChild(child);
+                document.getElementById("settingplus").innerHTML = mecinfo
+                document.getElementById("Settingnr").appendChild(child);
             }
         }
-        if(type=="genre"){
-            console.log(geninfo)
-            if(geninfo <= 8){
-                geninfo += 1;
+        if(type=="mechanic"){
+            if(mecinfo <= 8){
+                mecinfo += 1;
                 const child = document.createElement("p")
-                child.id = "gen"+geninfo
-                child.innerHTML = "Genre"
+                child.id = "mec"+mecinfo
+                child.innerHTML = "Mechanic"
                 child.className =  "insidetext"
                 console.log(child.class)
-                document.getElementById("genreplus").innerHTML = geninfo
-                document.getElementById("Genrenr").appendChild(child);
+                document.getElementById("mechanicplus").innerHTML = mecinfo
+                document.getElementById("Mechanicnr").appendChild(child);
             }
         }
     }
@@ -95,8 +93,24 @@
                 geninfo -= 1;
                 console.log(findid)
                 document.getElementById("genreplus").innerHTML = geninfo
-                console.log(document.getElementById("Genrenr").children)
                 document.getElementById("Genrenr").removeChild(document.getElementById("Genrenr").children[findid]);
+            }
+        }
+
+        if(type=="setting"){
+            if(setinfo > 0){
+                findid = "set"+setinfo
+                setinfo -= 1;
+                document.getElementById("settingplus").innerHTML = setinfo
+                document.getElementById("Settingnr").removeChild(document.getElementById("Settingnr").children[findid]);
+            }
+        }
+        if(type=="mechanic"){
+            if(mecinfo > 0 ){
+                findid = "mec"+mecinfo
+                mecinfo -= 1;
+                document.getElementById("mechanicplus").innerHTML = mecinfo
+                document.getElementById("Mechanicnr").removeChild(document.getElementById("Mechanicnr").children[findid]);
             }
         }
     }
@@ -114,8 +128,8 @@
     </div>
     <div id = 'Settingnr' class = 'multicontainer'>
         {{build_block(settinginfo , 'set')}}
-        <button id="settingsplus" class="plusminus" style="left:20%;" onclick="plus('settings')">splus</button>
-        <button id="settingsminus" class="plusminus" style="right:20%;" onclick="minus('settings')">sminus</button>
+        <button id="settingplus" class="plusminus" style="left:20%;" onclick="plus('settings')">splus</button>
+        <button id="settingminus" class="plusminus" style="right:20%;" onclick="minus('settings')">sminus</button>
     </div>
     <div id = 'Mechanicnr' class = 'multicontainer'>
         {{build_block(mechanicinfo, 'mec')}}
