@@ -82,7 +82,9 @@ a {
 
 #bigcontainer {
     float: right;
-    
+    display: flex;
+    justify-content: center;
+    align-items: center; /* To align vertically, if needed */
 }
 
 .multicontainer {
@@ -92,27 +94,32 @@ a {
     float: left;
 }
 
-#Mechanicnr {
+#Mechanicbox {
     background-color:#EF8181;
 }
 
-#Genrenr {
+#Genrebox {
     background-color:#9ECE9A;
+   
+    
 }
 
-#Settingnr {
+#Settingbox {
     background-color:#8ACDEA;
 }
 
 .insidetext {
-    font-size: 2vh;
+    font-size: 3vh;
     padding-top: 2%;
     padding-bottom: 2%;
+    text-align: center;
+    
 }
+
 
 .plusminus{
     position:absolute;
-    top: 85%;
+    top: 90%;
     width:20%;
     font-size: 1vw
 }

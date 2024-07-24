@@ -56,7 +56,33 @@
                 child.className =  "insidetext"
                 console.log(child.class)
                 document.getElementById("genreplus").innerHTML = geninfo
-                document.getElementById("Genrenr").appendChild(child);
+                document.getElementById("Genrebox").appendChild(child);
+            }
+        }
+        if(type=="set"){
+            
+            if(setinfo <= 8){
+                setinfo += 1;
+                const child = document.createElement("p")
+                child.id = "set"+setinfo
+                child.innerHTML = "Setting"
+                child.className =  "insidetext"
+                console.log(child.class)
+                document.getElementById("setplus").innerHTML = setinfo
+                document.getElementById("Settingbox").appendChild(child);
+            }
+        }
+        if(type=="mec"){
+            
+            if(mecinfo <= 8){
+                mecinfo += 1;
+                const child = document.createElement("p")
+                child.id = "mec"+mecinfo
+                child.innerHTML = "Mechanic"
+                child.className =  "insidetext"
+                console.log(child.class)
+                document.getElementById("mecplus").innerHTML = mecinfo
+                document.getElementById("Mechanicbox").appendChild(child);
             }
         }
     }
@@ -69,8 +95,30 @@
                 geninfo -= 1;
                 console.log(findid)
                 document.getElementById("genreplus").innerHTML = geninfo
-                console.log(document.getElementById("Genrenr").children)
-                document.getElementById("Genrenr").removeChild(document.getElementById("Genrenr").children[findid]);
+                console.log(document.getElementById("Genrebox").children)
+                document.getElementById("Genrebox").removeChild(document.getElementById("Genrebox").children[findid]);
+            }
+        }
+        if(type=="set"){
+            
+            if(setinfo > 0){
+                findid = "set"+setinfo
+                setinfo -= 1;
+                console.log(findid)
+                document.getElementById("setplus").innerHTML = setinfo
+                console.log(document.getElementById("Settingbox").children)
+                document.getElementById("Settingbox").removeChild(document.getElementById("Settingbox").children[findid]);
+            }
+        }
+        if(type=="mec"){
+            
+            if(mecinfo > 0){
+                findid = "mec"+mecinfo
+                mecinfo -= 1;
+                console.log(findid)
+                document.getElementById("mecplus").innerHTML = mecinfo
+                console.log(document.getElementById("Mechanicbox").children)
+                document.getElementById("Mechanicbox").removeChild(document.getElementById("Mechanicbox").children[findid]);
             }
         }
     }
@@ -81,16 +129,20 @@
 
 <div id = "bigcontainer"> 
     
-    <div id = 'Genrenr' class = 'multicontainer'>
+    <div id = 'Genrebox' class = 'multicontainer'>
         {{build_block(genreinfo, 'gen')}}
         <button id="genreplus" class="plusminus" style="left:20%;" onclick="plus('genre')">gplus</button>
         <button id="genreminus" class="plusminus" style="right:20%;" onclick="minus('genre')">gminus</button>
     </div>
-    <div id = 'Settingnr' class = 'multicontainer'>
+    <div id = 'Settingbox' class = 'multicontainer'>
         {{build_block(settinginfo , 'set')}}
+        <button id="setplus" class="plusminus" style="left:20%;" onclick="plus('set')">gplus</button>
+        <button id="setminus" class="plusminus" style="right:20%;" onclick="minus('set')">gminus</button>
     </div>
-    <div id = 'Mechanicnr' class = 'multicontainer'>
+    <div id = 'Mechanicbox' class = 'multicontainer'>
         {{build_block(mechanicinfo, 'mec')}}
+        <button id="mecplus" class="plusminus" style="left:20%;" onclick="plus('mec')">gplus</button>
+        <button id="mecminus" class="plusminus" style="right:20%;" onclick="minus('mec')">gminus</button>
     </div>
 
 </div>
@@ -100,8 +152,11 @@
 <div id="output"></div> 
 
 <h2>{{test}}</h2>
-<a href="{{ '/results/%s'%settings }}" id="randomize">RANDOMIZE!</a>
-<button id = "test" onclick="switchPage(geninfo, setinfo, mecinfo)">addgenre</button>
+<button id = "test" onclick="switchPage(geninfo, setinfo, mecinfo)">RANDOMIZE!</button>
+<button id = "2d3d" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">jow</button>
+<button id = "viewsaved" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">View Saved Results</button>
+<button id = "savesettings" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">Save Settings</button>
+<button id = "viewsaved" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">Use Saved Settings</button>
 
 
 {%endblock%}
