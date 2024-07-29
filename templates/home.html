@@ -68,8 +68,8 @@
                 child.innerHTML = "Setting"
                 child.className =  "insidetext"
                 console.log(child.class)
-                document.getElementById("settingplus").innerHTML = mecinfo
-                document.getElementById("Settingnr").appendChild(child);
+                document.getElementById("settingplus").innerHTML = setinfo
+                document.getElementById("Settingbox").appendChild(child);
             }
         }
         if(type=="mechanic"){
@@ -81,7 +81,7 @@
                 child.className =  "insidetext"
                 console.log(child.class)
                 document.getElementById("mechanicplus").innerHTML = mecinfo
-                document.getElementById("Mechanicnr").appendChild(child);
+                document.getElementById("Mechanicbox").appendChild(child);
             }
         }
     }
@@ -94,8 +94,8 @@
                 geninfo -= 1;
                 console.log(findid)
                 document.getElementById("genreplus").innerHTML = geninfo
-                console.log(document.getElementById("Genrenr").children)
-                document.getElementById("Genrenr").removeChild(document.getElementById("Genrenr").children[findid]);
+                console.log(document.getElementById("Genrebox").children)
+                document.getElementById("Genrebox").removeChild(document.getElementById("Genrenr").children[findid]);
             }
         }
 
@@ -104,7 +104,7 @@
                 findid = "set"+setinfo
                 setinfo -= 1;
                 document.getElementById("settingplus").innerHTML = setinfo
-                document.getElementById("Settingnr").removeChild(document.getElementById("Settingnr").children[findid]);
+                document.getElementById("Settingbox").removeChild(document.getElementById("Settingbox").children[findid]);
             }
         }
         if(type=="mechanic"){
@@ -112,43 +112,40 @@
                 findid = "mec"+mecinfo
                 mecinfo -= 1;
                 document.getElementById("mechanicplus").innerHTML = mecinfo
-                document.getElementById("Mechanicnr").removeChild(document.getElementById("Mechanicnr").children[findid]);
+                document.getElementById("Mechanicbox").removeChild(document.getElementById("Mechanicbox").children[findid]);
             }
         }
     }
 
 </script>
 
-<p class="spacer">hi</p>
+<p class="spacer">Uh Oh! something's broken. Call 111 for assistance</p>
 
-<div id = "bigcontainer"> 
-    
-    <div id = 'Genrebox' class = 'multicontainer'>
-        {{build_block(genreinfo, 'gen')}}
-        <button id="genreplus" class="plusminus" style="left:20%;" onclick="plus('genre')">gplus</button>
-        <button id="genreminus" class="plusminus" style="right:20%;" onclick="minus('genre')">gminus</button>
-    </div>
-    <div id = 'Settingbox' class = 'multicontainer'>
-        {{build_block(settinginfo , 'set')}}
-        <button id="settingplus" class="plusminus" style="left:20%;" onclick="plus('setting')">gplus</button>
-        <button id="settingminus" class="plusminus" style="right:20%;" onclick="minus('setting')">gminus</button>
-    </div>
-    <div id = 'Mechanicbox' class = 'multicontainer'>
-        {{build_block(mechanicinfo, 'mec')}}
-        <button id="mechanicplus" class="plusminus" style="left:20%;" onclick="plus('mechanic')">gplus</button>
-        <button id="mechanicminus" class="plusminus" style="right:20%;" onclick="minus('mechanic')">gminus</button>
+<div class="page">
+
+    <div class="buttongrid">
+    <button id = "2d3d" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">RANDOMIZE</button>
+    <button id = "viewsaved" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">View Saved Results</button>
+    <button id = "savesettings" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">Save Settings</button>
+    <button id = "viewsaved" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">Use Saved Settings</button>
     </div>
 
-<input type="text" id="input"> 
-<button onclick="sendData()">Send Data</button> 
-<div id="output"></div> 
-
-<h2>{{test}}</h2>
-<button id = "test" onclick="switchPage(geninfo, setinfo, mecinfo)">RANDOMIZE!</button>
-<button id = "2d3d" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">jow</button>
-<button id = "viewsaved" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">View Saved Results</button>
-<button id = "savesettings" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">Save Settings</button>
-<button id = "viewsaved" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">Use Saved Settings</button>
+<div id = 'Genrebox' class = 'multicontainer'>
+    {{build_block(genreinfo, 'gen')}}
+    <button id="genreplus" class="plusminus" style="left:20%;" onclick="plus('genre')">gplus</button>
+    <button id="genreminus" class="plusminus" style="right:20%;" onclick="minus('genre')">gminus</button>
+</div>
+<div id = 'Settingbox' class = 'multicontainer'>
+    {{build_block(settinginfo , 'set')}}
+    <button id="settingplus" class="plusminus" style="left:20%;" onclick="plus('setting')">gplus</button>
+    <button id="settingminus" class="plusminus" style="right:20%;" onclick="minus('setting')">gminus</button>
+</div>
+<div id = 'Mechanicbox' class = 'multicontainer'>
+    {{build_block(mechanicinfo, 'mec')}}
+    <button id="mechanicplus" class="plusminus" style="left:20%;" onclick="plus('mechanic')">gplus</button>
+    <button id="mechanicminus" class="plusminus" style="right:20%;" onclick="minus('mechanic')">gminus</button>
+</div>
+</div>
 
 
 {%endblock%}

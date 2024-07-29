@@ -80,18 +80,13 @@ a {
     margin: 0;
 }
 
-#bigcontainer {
-    float: right;
-    display: flex;
-    justify-content: center;
-    align-items: center; /* To align vertically, if needed */
-}
+
 
 .multicontainer {
-    width: 20vw;
     position: relative;
     height: 94.5vh;
-    float: left;
+    width: 100%;
+    
 }
 
 #Mechanicbox {
@@ -122,4 +117,23 @@ a {
     top: 90%;
     width:20%;
     font-size: 1vw
+}
+
+.settingbutton{
+    width: 50%;
+    height: 100%;
+    
+}
+
+.page{
+    display: grid;
+    grid-template-columns: 40% 20% 20% 20%;
+    height: 94.5%;
+}
+
+.buttongrid{
+    display: grid;
+    row-gap: 10%;
+    margin-left: 10%;
+    height: 94.5vh;
 }
