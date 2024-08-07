@@ -1,5 +1,34 @@
 {%extends "layout.html" %}
 {% block content %}
-<p class="spacer">hey bud</p>
-<p>{{results}}</p>
+
+{% macro build_block(things, idname) %} <!--Pass a list to create a block with those elements-->
+    {% for i in range(things|length) %}
+    <p class="insidetext" id={{idname + (i+1)|string }}>{{things[i]}}</p> <!--Dont mind the red, this is fine-->
+    {%endfor%}
+{% endmacro %}
+
+
+<p class="spacer">Uh Oh! something's broken. Call 111 for assistance</p>
+
+<div class="page">
+
+    <div class="buttongrid">
+    <button id = "reroll" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">Reroll</button>
+    <button id = "saveres" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">Save Results</button>
+    <button id = "viewsavedres" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">View Saved Results</button>
+    </div>
+
+<div id = 'Genrebox' class = 'multicontainer'>
+    {{build_block(gchoice, 'gen')}}
+
+</div>
+<div id = 'Settingbox' class = 'multicontainer'>
+    {{build_block(schoice , 'set')}}
+    
+</div>
+<div id = 'Mechanicbox' class = 'multicontainer'>
+    {{build_block(mchoice, 'mec')}}
+    
+</div>
+</div>
 {%endblock%}

@@ -33,14 +33,27 @@ def results(settings):
     # total = []  # list of lists of genre, set, mec results
     # result = []  # each result goes here
     uvtaf = list(map(int, str(settings).split("'n")))
-    genreamount, settingsamount, mechanicamount = uvtaf
-    print(genreamount, settingsamount, mechanicamount)
+    genreamount, settingamount, mechanicamount = uvtaf
+    print(genreamount, settingamount, mechanicamount)
     conn = sqlite3.connect(db)
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Genre")  # add conditions here
-    options = cur.fetchall()
-    choice = random.sample(options, genreamount)
-    return render_template("results.html", results=choice)
+
+    counts = [[], [], []]
+    cur.execute("SELECT name FROM Genre")  # add conditions here
+    counts[0] = cur.fetchall()
+    cur.execute("SELECT name FROM Mechanic")  # add conditions here
+    counts[1] = cur.fetchall()
+    cur.execute("SELECT name FROM Setting")  # add conditions here
+    counts[2] = cur.fetchall()
+
+    print(counts)
+
+    gchoice = random.sample(counts[0], genreamount)
+    mchoice = random.sample(counts[1], mechanicamount)
+    schoice = random.sample(counts[2], settingamount)
+
+    return render_template("results.html", gchoice=gchoice,
+                           mchoice=mchoice, schoice=schoice)
 
 
 @app.route('/login')
@@ -65,10 +78,6 @@ def process():
     data = request.get_json()  # retrieve the data sent from JavaScript
     result = data['value'] * 2
     return jsonify(result=result)  # return the result to JavaScript
-
-
-def Jon_Arbuckle(self, green, hoes):
-    print(self)
 
 
 if __name__ == "__main__":
