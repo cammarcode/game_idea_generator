@@ -4,16 +4,20 @@ import random
 
 uvtaf = 0  # uselessvariabletoavoidflake
 
+
+def remove_brackets(thing):
+    return thing[0]
+
+
 app = Flask(__name__)
 db = "gamedb.db"
 
 
-def get_ids():
-    pass
-
-
 @app.route('/')
 def home():  # Homepage, no values loaded in
+
+    print("yay")
+
     conn = sqlite3.connect(db)
     cur = conn.cursor()
     cur = cur
@@ -28,10 +32,12 @@ def home():  # Homepage, no values loaded in
 
 @app.route('/results/<settings>')
 def results(settings):
+
+    print("we here")
+
     """Settings are a string of letters/numbers which
     represent: genreamount, settingsamount, mechanicamount """
-    # total = []  # list of lists of genre, set, mec results
-    # result = []  # each result goes here
+
     uvtaf = list(map(int, str(settings).split("'n")))
     genreamount, settingamount, mechanicamount = uvtaf
     print(genreamount, settingamount, mechanicamount)
@@ -39,21 +45,20 @@ def results(settings):
     cur = conn.cursor()
 
     counts = [[], [], []]
-    cur.execute("SELECT name FROM Genre")  # add conditions here
+    cur.execute("SELECT name, description FROM Genre")  # add conditions here
     counts[0] = cur.fetchall()
-    cur.execute("SELECT name FROM Mechanic")  # add conditions here
+    cur.execute("SELECT name, description FROM Mechanic")  # add conditions her
     counts[1] = cur.fetchall()
-    cur.execute("SELECT name FROM Setting")  # add conditions here
+    cur.execute("SELECT name, description FROM Setting")  # add conditions here
     counts[2] = cur.fetchall()
 
-    print(counts)
-
-    gchoice = random.sample(counts[0], genreamount)
-    mchoice = random.sample(counts[1], mechanicamount)
-    schoice = random.sample(counts[2], settingamount)
+    gchoice = list(random.sample(counts[0], genreamount))
+    mchoice = list(random.sample(counts[1],
+                                 mechanicamount))
+    schoice = list(random.sample(counts[2], settingamount))
 
     return render_template("results.html", gchoice=gchoice,
-                           mchoice=mchoice, schoice=schoice)
+                           mchoice=mchoice, schoice=schoice, settings=settings)
 
 
 @app.route('/login')
@@ -76,8 +81,30 @@ def triangles(size, type, chara):
 @app.route('/process', methods=['POST'])
 def process():
     data = request.get_json()  # retrieve the data sent from JavaScript
-    result = data['value'] * 2
-    return jsonify(result=result)  # return the result to JavaScript
+    settingsfromurl = data['value'] * 2
+
+    print(settingsfromurl)
+
+    uvtaf = list(map(int, str(settingsfromurl).split("'n")))
+    genreamount, settingamount, mechanicamount = uvtaf
+    print(genreamount, settingamount, mechanicamount)
+    conn = sqlite3.connect(db)
+    cur = conn.cursor()
+    print('only here')
+    counts = [[], [], []]
+    cur.execute("SELECT name, description FROM Genre")  # add conditions here
+    counts[0] = cur.fetchall()
+    cur.execute("SELECT name, description FROM Mechanic")  # add conditions her
+    counts[1] = cur.fetchall()
+    cur.execute("SELECT name, description FROM Setting")  # add conditions here
+    counts[2] = cur.fetchall()
+
+    gchoice = list(random.sample(counts[0], genreamount))
+    mchoice = list(random.sample(counts[1],
+                                 mechanicamount))
+    schoice = list(random.sample(counts[2], settingamount))
+    print('here')
+    return jsonify(result=[gchoice, mchoice, schoice])  # return to js
 
 
 if __name__ == "__main__":

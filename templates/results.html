@@ -3,19 +3,44 @@
 
 {% macro build_block(things, idname) %} <!--Pass a list to create a block with those elements-->
     {% for i in range(things|length) %}
-    <p class="insidetext" id={{idname + (i+1)|string }}>{{things[i]}}</p> <!--Dont mind the red, this is fine-->
+    <div class="tooltip">
+    <p class="insidetext" id={{idname + (i+1)|string }}>{{things[i][0]}}</p> <!--Dont mind the red, this is fine-->
+    <span class="tooltiptext">{{things[i][1]}}</span>
+    </div>
     {%endfor%}
 {% endmacro %}
 
+<script type="text/javascript">
+    function sendData() { 
+        var value = {{settings}}; 
+        $.ajax({ 
+            url: '/process', 
+            type: 'POST', 
+            contentType: 'application/json', 
+            data: JSON.stringify({ 'value': value }),
+            dataType: 'json', 
+            success: function(response) { 
+                console.log(response);
+                document.getElementById('Genrebox').innerHTML = {{build_block(response.result[0], 'gen')}}; 
+                document.getElementById('Settingbox').innerHTML = {{build_block(response.result[1], 'set')}}; 
+                document.getElementById('Mechanicbox').innerHTML = {{build_block(response.result[2], 'mec')}};
+            }, 
+            error: function(error) { 
+                console.log(error); 
+                console.log('uh oh');
+            } 
+        }); 
+    } 
+</script>
 
 <p class="spacer">Uh Oh! something's broken. Call 111 for assistance</p>
 
 <div class="page">
 
     <div class="buttongrid">
-    <button id = "reroll" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">Reroll</button>
-    <button id = "saveres" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">Save Results</button>
-    <button id = "viewsavedres" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">View Saved Results</button>
+    <button id = "reroll" class="settingbutton" >Reroll</button>
+    <button id = "saveres" class="settingbutton" >Save Results</button>
+    <button id = "viewsavedres" class="settingbutton">View Saved Results</button>
     </div>
 
 <div id = 'Genrebox' class = 'multicontainer'>

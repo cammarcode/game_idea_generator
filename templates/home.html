@@ -22,21 +22,7 @@
         document.getElementById("genreplus").innerHTML = geninfo;
         }
      
-     function sendData() { 
-            var value = document.getElementById('input').value; 
-            $.ajax({ 
-                url: '/process', 
-                type: 'POST', 
-                contentType: 'application/json', 
-                data: JSON.stringify({ 'value': value }), 
-                success: function(response) { 
-                    document.getElementById('output').innerHTML = response.result; 
-                }, 
-                error: function(error) { 
-                    console.log(error); 
-                } 
-            }); 
-        } 
+    
     function switchPage(t1, t2, t3) {  /* t 1,2,3 are below inputs because jinja doesnt work in js - nevermind it does but im keeping this */
         /* Sending: genre amount, settings amount, mechanics amount, */
         resstring = String(t1) + "'n" + String(t2) + "'n" + String(t3)
