@@ -38,7 +38,7 @@ def results(settings):
     """Settings are a string of letters/numbers which
     represent: genreamount, settingsamount, mechanicamount """
 
-    uvtaf = list(map(int, str(settings).split("'n")))
+    uvtaf = list(map(int, str(settings).split("n")))
     genreamount, settingamount, mechanicamount = uvtaf
     print(genreamount, settingamount, mechanicamount)
     conn = sqlite3.connect(db)
@@ -81,11 +81,11 @@ def triangles(size, type, chara):
 @app.route('/process', methods=['POST'])
 def process():
     data = request.get_json()  # retrieve the data sent from JavaScript
-    settingsfromurl = data['value'] * 2
+    settingsfromurl = data['value']
 
     print(settingsfromurl)
 
-    uvtaf = list(map(int, str(settingsfromurl).split("'n")))
+    uvtaf = list(map(int, str(settingsfromurl).split("n")))
     genreamount, settingamount, mechanicamount = uvtaf
     print(genreamount, settingamount, mechanicamount)
     conn = sqlite3.connect(db)
@@ -96,7 +96,7 @@ def process():
     counts[0] = cur.fetchall()
     cur.execute("SELECT name, description FROM Mechanic")  # add conditions her
     counts[1] = cur.fetchall()
-    cur.execute("SELECT name, description FROM Setting")  # add conditions here
+    cur.execute("SELECT name, description FROM Setting")  # add conditions here 
     counts[2] = cur.fetchall()
 
     gchoice = list(random.sample(counts[0], genreamount))
