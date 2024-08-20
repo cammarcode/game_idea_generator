@@ -1,5 +1,22 @@
 {%extends "layout.html" %}
 {% block content %}
 <p class="spacer">hey bud</p>
+<div class="loginorsignuppage">
+    {%if failed == True%}
+        <p class='error'>Username or Password is incorrect</p>
+    {%endif%}
+    <form action="{{url_for('loginsubmit')}}" method="POST">
+    
+        <label for="username">Username:</label>
+        <input type="text" name="username">
+    
+        <label for="password">Password:</label>
+        <input type="password" name="password">
+    
+        <input type="submit">
+        
+    </form>
+    
+    </div>
 <p>login</p>
 {%endblock%}

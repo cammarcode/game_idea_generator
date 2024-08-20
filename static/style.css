@@ -2,6 +2,7 @@ body {
     padding: 0;
     margin: 0;
     top: 0;
+    background-color: #E1EAEC;
 }
 
 
@@ -180,4 +181,19 @@ a {
 
 .loginorsignuppage{
     height: 94.5%;
+    
+}
+
+#signupbox{
+    height:100%;
+    display: grid;
+    row-gap: 10%;
+    margin-left: 18%;
+    margin-right: 18%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.lstext{
+    height:20%
 }

@@ -5,7 +5,6 @@ import random
 from hashlib import sha256
 import key
 from random import choice
-from gc import collect
 
 uvtaf = 0  # uselessvariabletoavoidflake
 
@@ -79,7 +78,10 @@ def results(settings):
 
 @app.route('/login')
 def login():
-    return render_template("login.html")
+    if 'failed' in session:
+        return render_template("login.html", failed=True)
+    else:
+        return render_template("login.html", failed=False)
 
 
 @app.route('/signup')
@@ -121,16 +123,34 @@ def signupsubmit():
             uvtaf = 'INSERT INTO Account (username,hash,salt) VALUES (?,?,?)'
             cur.execute(uvtaf, (username, hashed, salt,))
             conn.commit()
-            # Remove passwords immediately
-            del password1
-            del password2
-            collect()
             session.clear()
             return redirect(url_for('login'))
         session['usernameFailed'] = True
         return redirect(url_for('signup'))
     session['passwordFailed'] = True
     return redirect(url_for('signup'))
+
+
+@app.route('/loginsubmit', methods=['POST'])
+def loginsubmit():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    conn = sqlite3.connect(db)
+    cur = conn.cursor()
+    cur.execute('SELECT id, hash, salt FROM Account WHERE username = ?',
+                (username,))
+    data = cur.fetchone()
+    if data is not None:
+        # Hash the password plus salt, compare to db
+        hasher = sha256()
+        password += data[2]
+        hasher.update(password.encode())
+        hashed = hasher.hexdigest()
+        if hashed == data[1]:
+            session['id'] = data[0]
+            return redirect(url_for('home'))
+    session['failed'] = True
+    return redirect(url_for('login'))
 
 
 @app.route('/triangles/<size>/<type>/<chara>')
