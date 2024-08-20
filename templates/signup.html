@@ -1,5 +1,21 @@
 {%extends "layout.html" %}
 {% block content %}
 <p class="spacer">hey bud</p>
-<p>sign up</p>
+<div class="loginorsignuppage">
+<form action="{{url_for('signupsubmit')}}" method="POST">
+
+    <label for="username">Username:</label>
+    <input type="text" name="username">
+
+    <label for="password1">Password:</label>
+    <input type="password" name="password1">
+
+    <label for="password2">Confirm Password:</label>
+    <input type="password" name="password2">
+
+    <input type="submit">
+    
+</form>
+
+</div>
 {%endblock%}
