@@ -2,7 +2,7 @@ body {
     padding: 0;
     margin: 0;
     top: 0;
-    background-color: #E1EAEC;
+    
 }
 
 
@@ -121,9 +121,12 @@ a {
 
 .plusminus{
     position:absolute;
-    top: 90%;
-    width:20%;
-    font-size: 1vw
+    top: 85%;
+    font-size: 1vw;
+    width: 20%;
+    background: transparent;
+    border: none;
+    
 }
 
 .settingbutton{
@@ -179,21 +182,40 @@ a {
     }
 /* Thanks, w3schools! */
 
-.loginorsignuppage{
-    height: 94.5%;
-    
+.blankpage{
+    height: 94.5vh;
+    align-content: center;
 }
 
 #signupbox{
-    height:100%;
     display: grid;
-    row-gap: 10%;
-    margin-left: 18%;
-    margin-right: 18%;
+    row-gap: 3%;
+    margin-left: 30%;
+    margin-right: 30%;
     margin-top: 5%;
     margin-bottom: 5%;
+    grid-template-rows: 5% 8% 5% 8% 5% 8% 10%;
+    height: 100%;
 }
 
 .lstext{
-    height:20%
+    font-size: x-large;
+}
+
+label{
+    font-size: x-large;
+    margin-top: 3%;
+}
+
+.buttonimg{
+    width: 100%
+}
+
+.error {
+    color: crimson;
+    font-size: x-large;
+    text-align: center;
+    width: 100%;
+    float: left;
+    
 }

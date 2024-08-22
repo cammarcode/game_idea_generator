@@ -54,13 +54,17 @@ def results(settings):
     represent: genreamount, settingsamount, mechanicamount """
 
     uvtaf = list(map(int, str(settings).split("n")))
-    genreamount, settingamount, mechanicamount = uvtaf
+    genreamount, settingamount, mechanicamount, dim = uvtaf
     print(genreamount, settingamount, mechanicamount)
     conn = sqlite3.connect(db)
     cur = conn.cursor()
-
     counts = [[], [], []]
-    cur.execute("SELECT name, description FROM Genre")  # add conditions here
+    if dim == 0:
+        cur.execute("SELECT name, description FROM Genre WHERE _2D = 1")  # add
+    elif dim == 1:
+        cur.execute("SELECT name, description FROM Genre WHERE _3D = 1")  # add
+    else:
+        cur.execute("SELECT name, description FROM Genre")  # add conditions he
     counts[0] = cur.fetchall()
     cur.execute("SELECT name, description FROM Mechanic")  # add conditions her
     counts[1] = cur.fetchall()
@@ -87,22 +91,21 @@ def login():
 @app.route('/signup')
 def signup():
     # Check for if password or username failed, and pass that on to html
-    # Thanks, Aditya!
-    if ('passwordFailed' in session):
-        del session['passwordFailed']
-        return render_template('signup.html',
-                               usernameFailed=False, passwordFailed=True)
+    
+    uf = False
+    pf = False
     if ('usernameFailed' in session):
         del session['usernameFailed']
-        return render_template('signup.html',
-                               usernameFailed=True, passwordFailed=False)
-    else:
-        return render_template('signup.html',
-                               usernameFailed=False, passwordFailed=False)
+        uf = True
+    if ('passwordFailed' in session):
+        del session['passwordFailed']
+        pf = True
+    return render_template('signup.html', usernameFailed=uf, passwordFailed=pf)
 
 
 @app.route('/signupsumbit', methods=["POST"])
 def signupsubmit():
+    # Thanks, Aditya!
     password1 = request.form.get('password1')
     password2 = request.form.get('password2')
     # Check if passwords match
@@ -114,9 +117,9 @@ def signupsubmit():
         cur.execute('SELECT id FROM Account WHERE username = ?', (username,))
         if len(cur.fetchall()) == 0:
             # Generate a salt, add it to password, hash,
-            # and then insert this user info into the user table
+            # and then insert hash and salt into account table
             salt = generate_salt(6)
-            password1 += salt  # type: ignore THIS MIGHT BREAK!!!!
+            password1 += salt  # type: ignore THIS MIGHT (not?) BREAK!!!!
             hasher = sha256()
             hasher.update(password1.encode())
             hashed = hasher.hexdigest()
@@ -168,13 +171,18 @@ def process():
     print(settingsfromurl)
 
     uvtaf = list(map(int, str(settingsfromurl).split("n")))
-    genreamount, settingamount, mechanicamount = uvtaf
+    genreamount, settingamount, mechanicamount, dim = uvtaf
     print(genreamount, settingamount, mechanicamount)
     conn = sqlite3.connect(db)
     cur = conn.cursor()
     print('only here')
     counts = [[], [], []]
-    cur.execute("SELECT name, description FROM Genre")  # add conditions here
+    if dim == 0:
+        cur.execute("SELECT name, description FROM Genre WHERE _2D = 1")  # add
+    elif dim == 1:
+        cur.execute("SELECT name, description FROM Genre WHERE _3D = 1")  # add
+    else:
+        cur.execute("SELECT name, description FROM Genre")  # add conditions he
     counts[0] = cur.fetchall()
     cur.execute("SELECT name, description FROM Mechanic")  # add conditions her
     counts[1] = cur.fetchall()

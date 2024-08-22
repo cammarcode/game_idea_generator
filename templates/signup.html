@@ -1,21 +1,28 @@
 {%extends "layout.html" %}
 {% block content %}
 <p class="spacer">hey bud</p>
-<div class="loginorsignuppage">
-<form action="{{url_for('signupsubmit')}}" method="POST">
 
+<form action="{{url_for('signupsubmit')}}" method="POST">
+    <div class="blankpage">
+    {%if usernameFailed == True%}
+    <p class='error'>Username is already in use</p>
+    {%endif%}
+    {%if passwordFailed == True%}
+    <p class='error'>Passwords do not match</p>
+    {%endif%}
+    <div id="signupbox">
     <label for="username">Username:</label>
-    <input type="text" name="username">
+    <input type="text" name="username" class="lstext">
 
     <label for="password1">Password:</label>
-    <input type="password" name="password1">
+    <input type="password" name="password1" class="lstext">
 
     <label for="password2">Confirm Password:</label>
-    <input type="password" name="password2">
+    <input type="password" name="password2" class="lstext">
 
-    <input type="submit">
-    
+    <input type="submit" class="lstext">
+    </div>
+    </div>
 </form>
 
-</div>
 {%endblock%}

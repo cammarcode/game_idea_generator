@@ -14,18 +14,16 @@
     var mecinfo = 0
 
      window.onload = function() {
-        document.getElementById("genreplus").innerHTML = '0';
         geninfo = {{genreinfo|length}} /*infos are lists so take length*/
         setinfo = {{settinginfo|length}}
         mecinfo = {{mechanicinfo|length}}
         
-        document.getElementById("genreplus").innerHTML = geninfo;
         }
      
     
     function switchPage(t1, t2, t3) {  /* t 1,2,3 are below inputs because jinja doesnt work in js - nevermind it does but im keeping this */
         /* Sending: genre amount, settings amount, mechanics amount, */
-        resstring = String(t1) + "n" + String(t2) + "n" + String(t3)
+        resstring = String(t1) + "n" + String(t2) + "n" + String(t3) + "n" + String(dim)
         window.location.href = "http://127.0.0.1:5000/results/" + resstring; 
 
     
@@ -41,7 +39,6 @@
                 child.innerHTML = "Genre"
                 child.className =  "insidetext"
                 console.log(child.class)
-                document.getElementById("genreplus").innerHTML = geninfo
                 document.getElementById("Genrebox").appendChild(child);
             }
         }
@@ -54,7 +51,6 @@
                 child.innerHTML = "Setting"
                 child.className =  "insidetext"
                 console.log(child.class)
-                document.getElementById("settingplus").innerHTML = setinfo
                 document.getElementById("Settingbox").appendChild(child);
             }
         }
@@ -66,7 +62,6 @@
                 child.innerHTML = "Mechanic"
                 child.className =  "insidetext"
                 console.log(child.class)
-                document.getElementById("mechanicplus").innerHTML = mecinfo
                 document.getElementById("Mechanicbox").appendChild(child);
             }
         }
@@ -78,9 +73,6 @@
             if(geninfo > 0){
                 findid = "gen"+geninfo
                 geninfo -= 1;
-                console.log(findid)
-                document.getElementById("genreplus").innerHTML = geninfo
-                console.log(document.getElementById("Genrebox").children)
                 document.getElementById("Genrebox").removeChild(document.getElementById("Genrebox").children[findid]);
             }
         }
@@ -89,7 +81,6 @@
             if(setinfo > 0){
                 findid = "set"+setinfo
                 setinfo -= 1;
-                document.getElementById("settingplus").innerHTML = setinfo
                 document.getElementById("Settingbox").removeChild(document.getElementById("Settingbox").children[findid]);
             }
         }
@@ -97,9 +88,26 @@
             if(mecinfo > 0 ){
                 findid = "mec"+mecinfo
                 mecinfo -= 1;
-                document.getElementById("mechanicplus").innerHTML = mecinfo
                 document.getElementById("Mechanicbox").removeChild(document.getElementById("Mechanicbox").children[findid]);
             }
+        }
+    }
+
+    var dim = 0
+
+    function changeDim(){
+        if(dim==0){
+            dim=1;
+            document.getElementById("2d3d").innerHTML = "3D";
+            console.log('2d');
+        }
+        else if(dim==1){
+            dim=2;
+            document.getElementById("2d3d").innerHTML = "2D or 3D";
+        }
+        else{
+            dim=0;
+            document.getElementById("2d3d").innerHTML = "2D";
         }
     }
 
@@ -110,26 +118,31 @@
 <div class="page">
     
     <div class="buttongrid">
-    <button id = "2d3d" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">RANDOMIZE</button>
-    <button id = "viewsaved" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">View Saved Results</button>
-    <button id = "savesettings" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">Save Settings</button>
-    <button id = "viewsaved" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">Use Saved Settings</button>
+    <button id = "randomize" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">RANDOMIZE</button>
+    <button id = "2d3d" class="settingbutton" onclick="changeDim()">2D</button>
+    <button id = "viewsavedres" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">View Saved Results</button>
     </div>
 
 <div id = 'Genrebox' class = 'multicontainer'>
     {{build_block(genreinfo, 'gen')}}
-    <button id="genreplus" class="plusminus" style="left:20%;" onclick="plus('genre')">gplus</button>
-    <button id="genreminus" class="plusminus" style="right:20%;" onclick="minus('genre')">gminus</button>
+    <button id="genreplus" class="plusminus" style="left:20%;" onclick="plus('genre')">
+        <img src="/static/images/plusicon.png" class="buttonimg"></button>
+    <button id="genreminus" class="plusminus" style="right:20%;" onclick="minus('genre')">
+        <img src="/static/images/minusicon.png" class="buttonimg"></button>
 </div>
 <div id = 'Settingbox' class = 'multicontainer'>
     {{build_block(settinginfo , 'set')}}
-    <button id="settingplus" class="plusminus" style="left:20%;" onclick="plus('setting')">gplus</button>
-    <button id="settingminus" class="plusminus" style="right:20%;" onclick="minus('setting')">gminus</button>
+    <button id="settingplus" class="plusminus" style="left:20%;" onclick="plus('setting')">
+        <img src="/static/images/plusicon.png" class="buttonimg"></button>
+    <button id="settingminus" class="plusminus" style="right:20%;" onclick="minus('setting')">
+        <img src="/static/images/minusicon.png" class="buttonimg"></button>
 </div>
 <div id = 'Mechanicbox' class = 'multicontainer'>
     {{build_block(mechanicinfo, 'mec')}}
-    <button id="mechanicplus" class="plusminus" style="left:20%;" onclick="plus('mechanic')">gplus</button>
-    <button id="mechanicminus" class="plusminus" style="right:20%;" onclick="minus('mechanic')">gminus</button>
+    <button id="mechanicplus" class="plusminus" style="left:20%;" onclick="plus('mechanic')">
+        <img src="/static/images/plusicon.png" class="buttonimg"></button>
+    <button id="mechanicminus" class="plusminus" style="right:20%;" onclick="minus('mechanic')">
+        <img src="/static/images/minusicon.png" class="buttonimg"></button>
 </div>
 </div>
 
