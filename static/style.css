@@ -194,7 +194,18 @@ a {
     margin-right: 30%;
     margin-top: 5%;
     margin-bottom: 5%;
-    grid-template-rows: 5% 8% 5% 8% 5% 8% 10%;
+    grid-template-rows: 5% 8% 5% 8% 5% 8% 10% 5%;
+    height: 100%;
+}
+
+#loginbox{
+    display: grid;
+    row-gap: 3%;
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    grid-template-rows: 5% 8% 5% 8% 10% 5%;
     height: 100%;
 }
 
@@ -217,5 +228,5 @@ label{
     text-align: center;
     width: 100%;
     float: left;
-    
+    margin: 0;
 }

@@ -83,6 +83,7 @@ def results(settings):
 @app.route('/login')
 def login():
     if 'failed' in session:
+        session.clear()
         return render_template("login.html", failed=True)
     else:
         return render_template("login.html", failed=False)
@@ -91,7 +92,6 @@ def login():
 @app.route('/signup')
 def signup():
     # Check for if password or username failed, and pass that on to html
-    
     uf = False
     pf = False
     if ('usernameFailed' in session):
@@ -108,14 +108,14 @@ def signupsubmit():
     # Thanks, Aditya!
     password1 = request.form.get('password1')
     password2 = request.form.get('password2')
-    # Check if passwords match
+    username = request.form.get('username')
+    conn = sqlite3.connect(db)
+    cur = conn.cursor()
+    # Ensure that no other users have the same name
+    cur.execute('SELECT id FROM Account WHERE username = ?', (username,))
+    usernametest = cur.fetchall()
     if password1 == password2:
-        username = request.form.get('username')
-        conn = sqlite3.connect(db)
-        cur = conn.cursor()
-        # Ensure that no other users have the same name
-        cur.execute('SELECT id FROM Account WHERE username = ?', (username,))
-        if len(cur.fetchall()) == 0:
+        if len(usernametest) == 0:
             # Generate a salt, add it to password, hash,
             # and then insert hash and salt into account table
             salt = generate_salt(6)
@@ -128,9 +128,10 @@ def signupsubmit():
             conn.commit()
             session.clear()
             return redirect(url_for('login'))
+    if len(usernametest) != 0:
         session['usernameFailed'] = True
-        return redirect(url_for('signup'))
-    session['passwordFailed'] = True
+    if password1 != password2:
+        session['passwordFailed'] = True
     return redirect(url_for('signup'))
 
 

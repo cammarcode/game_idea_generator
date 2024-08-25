@@ -1,22 +1,23 @@
 {%extends "layout.html" %}
 {% block content %}
 <p class="spacer">hey bud</p>
-<div class="loginorsignuppage">
-    {%if failed == True%}
-        <p class='error'>Username or Password is incorrect</p>
-    {%endif%}
     <form action="{{url_for('loginsubmit')}}" method="POST">
-    
-        <label for="username">Username:</label>
-        <input type="text" name="username" class="lstest">
-    
-        <label for="password">Password:</label>
-        <input type="password" name="password" class="lstest">
-    
-        <input type="submit" class="lstest">
+        <div class="blankpage">
+            {%if failed == True%}
+            <p class='error'>Username or password is incorrect</p>
+            {%endif%}
+
+            <div id="loginbox">
+            <label for="username">Username:</label>
+            <input type="text" name="username" class="lstext">
         
+            <label for="password">Password:</label>
+            <input type="password" name="password" class="lstext">
+        
+            <input type="submit" class="lstext">
+        
+            <p>Don't have an account? <a href="/signup" style="color:blue;">Sign up here.</a></p>
+            </div>
     </form>
-    
-    </div>
 <p>login</p>
 {%endblock%}
