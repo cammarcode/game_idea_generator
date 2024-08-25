@@ -28,6 +28,11 @@ app.secret_key = key.key
 ##############################################################################
 
 
+@app.errorhandler(404)
+def not_found(e):
+    return render_template("404.html")
+
+
 @app.route('/')
 def home():  # Homepage, no values loaded in
 
@@ -75,9 +80,12 @@ def results(settings):
     mchoice = list(random.sample(counts[1],
                                  mechanicamount))
     schoice = list(random.sample(counts[2], settingamount))
+    # This is a string version of the results which can be used 
+    resultstosave=''
+
 
     return render_template("results.html", gchoice=gchoice,
-                           mchoice=mchoice, schoice=schoice, settings=settings)
+                           mchoice=mchoice, schoice=schoice, settings=settings, resultstosave=resultstosave)
 
 
 @app.route('/login')
