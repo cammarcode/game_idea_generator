@@ -36,16 +36,13 @@ def not_found(e):
 @app.route('/')
 def home():  # Homepage, no values loaded in
 
-    print("yay")
-
     conn = sqlite3.connect(db)
     cur = conn.cursor()
     cur = cur
-    settings = 2
-    genreinfo = ["Genre", "Genre", "Genre",]
+    genreinfo = ["Genre",]
     settinginfo = ["Setting",]
     mechanicinfo = ["Mechanic",]
-    return render_template("home.html",  settings=settings, test=1,
+    return render_template("home.html", test=1,
                            genreinfo=genreinfo,
                            settinginfo=settinginfo, mechanicinfo=mechanicinfo)
 
@@ -80,12 +77,23 @@ def results(settings):
     mchoice = list(random.sample(counts[1],
                                  mechanicamount))
     schoice = list(random.sample(counts[2], settingamount))
-    # This is a string version of the results which can be used 
-    resultstosave=''
-
-
+    # This is a string version of the results which can be used to save to db
+    resultstosave = ''
+    resultstosave += "Genres:"
+    for i in gchoice:
+        resultstosave += '<br>'
+        resultstosave += i[0]
+    resultstosave += "<br>Settings:"
+    for i in schoice:
+        resultstosave += '<br>'
+        resultstosave += i[0]
+    resultstosave += '<br>Mechanics:'
+    for i in mchoice:
+        resultstosave += '<br>'
+        resultstosave += i[0]
     return render_template("results.html", gchoice=gchoice,
-                           mchoice=mchoice, schoice=schoice, settings=settings, resultstosave=resultstosave)
+                           mchoice=mchoice, schoice=schoice, settings=settings,
+                           resultstosave=resultstosave)
 
 
 @app.route('/login')
@@ -165,13 +173,6 @@ def loginsubmit():
     return redirect(url_for('login'))
 
 
-@app.route('/triangles/<size>/<type>/<chara>')
-def triangles(size, type, chara):
-    spacchar = " " * len(chara)
-    return render_template("triangles.html", size=int(size), type=type,
-                           chara=chara, spacchar=spacchar)
-
-
 @app.route('/process', methods=['POST'])
 def process():
     data = request.get_json()  # retrieve the data sent from JavaScript
@@ -184,7 +185,6 @@ def process():
     print(genreamount, settingamount, mechanicamount)
     conn = sqlite3.connect(db)
     cur = conn.cursor()
-    print('only here')
     counts = [[], [], []]
     if dim == 0:
         cur.execute("SELECT name, description FROM Genre WHERE _2D = 1")  # add
@@ -202,8 +202,41 @@ def process():
     mchoice = list(random.sample(counts[1],
                                  mechanicamount))
     schoice = list(random.sample(counts[2], settingamount))
-    print('here')
-    return jsonify(result=[gchoice, mchoice, schoice])  # return to js
+    # This is a string version of the results which can be used to save to db
+    resultstosave = ''
+    resultstosave += "Genres:"
+    for i in gchoice:
+        resultstosave += '<br>'
+        resultstosave += i[0]
+    resultstosave += "<br>Settings:"
+    for i in schoice:
+        resultstosave += '<br>'
+        resultstosave += i[0]
+    resultstosave += '<br>Mechanics:'
+    for i in mchoice:
+        resultstosave += '<br>'
+        resultstosave += i[0]
+    return jsonify(result=[gchoice, mchoice, schoice, resultstosave])
+    # return to js
+
+
+@app.route('/saveResults', methods=['POST'])
+def saveResults():
+    data = request.get_json()  # retrieve the data sent from JavaScript
+    newdata = data['value']
+    conn = sqlite3.connect(db)
+    cur = conn.cursor()
+    id = session['id']
+    print(id, newdata)
+    if id is not None:
+        cur.execute('''UPDATE Account SET res3 = (SELECT res2 FROM Account W
+                    HERE id = ?), res2 = (SELECT res1 FROM Account WHERE i
+                    d = ?), res1 = ? WHERE id = ?''', (1, 1, str(newdata), 1))
+        conn.commit()
+        conn.close()
+        return jsonify(result="success")
+    else:
+        return jsonify(result="failed")
 
 
 if __name__ == "__main__":
