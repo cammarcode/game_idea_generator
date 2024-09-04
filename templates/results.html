@@ -24,6 +24,7 @@
 
 
     function saveResults(){
+        console.log(resultstosave);
         $.ajax({ 
             url: '/saveResults', 
             type: 'POST', 
@@ -39,6 +40,7 @@
                 console.log('uh oh');
             } 
         });
+        
     }
 
     function sendData(){ 
@@ -72,6 +74,11 @@
             } 
         });
     } 
+
+    function goToResults(){
+        window.location.href = "http://127.0.0.1:5000/viewres"
+    }
+
 </script>
 
 <p class="spacer">Uh Oh! something's broken. Call 111 for assistance</p>
@@ -81,7 +88,7 @@
     <div class="buttongrid">
     <button id = "reroll" class="settingbutton" onclick="sendData()">Reroll</button>
     <button id = "saveres" class="settingbutton" onclick="saveResults()">Save Results</button>
-    <button id = "viewsavedres" class="settingbutton">View Saved Results</button>
+    <button id = "viewsavedres" class="settingbutton" onclick="goToResults()">View Saved Results</button>
     </div>
 
 <div id = 'Genrebox' class = 'multicontainer'>

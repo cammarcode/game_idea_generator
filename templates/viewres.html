@@ -1,4 +1,17 @@
 {%extends "layout.html" %}
 {% block content %}
-<p>{{res1}}</p>
+<script>
+    window.onload = function() {
+        // javascript hates ampersands so this solution works
+        res1 = "{{res1}}".replaceAll('&','b').replaceAll("bamp;lt;brbamp;gt;", "<br>"); 
+
+        document.getElementById('res1').innerHTML = res1;
+    }
+</script>
+<p class="spacer">hey bud</p>
+<div class="blankpage">
+    <div id="res1" class='resultdiv'></div>
+    <div id="res2" class='resultdiv'></div>
+    <div id="res3" class='resultdiv'></div>
+</div>
 {%endblock%}

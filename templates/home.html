@@ -111,6 +111,10 @@
         }
     }
 
+    function goToResults(){
+        window.location.href = "http://127.0.0.1:5000/viewres"
+    }
+
 </script>
 
 <p class="spacer">Uh Oh! something's broken. Call 111 for assistance</p>
@@ -120,7 +124,7 @@
     <div class="buttongrid">
     <button id = "randomize" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">RANDOMIZE</button>
     <button id = "2d3d" class="settingbutton" onclick="changeDim()">2D</button>
-    <button id = "viewsavedres" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">View Saved Results</button>
+    <button id = "viewsavedres" class="settingbutton" onclick="goToResults()">View Saved Results</button>
     </div>
 
 <div id = 'Genrebox' class = 'multicontainer'>

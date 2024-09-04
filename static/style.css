@@ -43,15 +43,16 @@ body {
     
 }
 #navsignup {
-    background-color: #8ACDEA;
+    background-color: #4fa3c7;
     float: right;
     z-index: 1;
     
 }
 #navlogin {
-    background-color: #8ACDEA;
+    background-color: #4fa3c7;
     float: right;
     z-index: 1;
+    border: none;
     
 }
 
@@ -69,7 +70,7 @@ body {
     padding-top: 0.5vh;
     padding-bottom: 0.5vh;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 4vh;
+    font-size: 3.9vh;
     background-color:#536B78;
     float: left;
     width: 35%;
@@ -185,6 +186,7 @@ a {
 .blankpage{
     height: 94.5vh;
     align-content: center;
+    padding: 0;
 }
 
 #signupbox{
@@ -204,7 +206,6 @@ a {
     margin-left: 30%;
     margin-right: 30%;
     margin-top: 5%;
-    margin-bottom: 5%;
     grid-template-rows: 5% 8% 5% 8% 10% 5%;
     height: 100%;
 }
@@ -219,7 +220,7 @@ label{
 }
 
 .buttonimg{
-    width: 100%
+    width: 80%
 }
 
 .error {
@@ -229,4 +230,14 @@ label{
     width: 100%;
     float: left;
     margin: 0;
+}
+
+.resultdiv {
+    float: left;
+    width: 28%;
+    margin-left: 4%;
+    margin-top: 3%;
+    margin-bottom: 5%;
+    height: 90%;
+    background-color:#8ACDEA;
 }

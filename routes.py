@@ -20,6 +20,11 @@ def generate_salt(length):
     result_str = ''.join(choice(letters) for i in range(length))
     return result_str
 
+def check_logged():
+    if session.get('id') is not None:
+        return True
+    else:
+        return False
 
 ##############################################################################
 app = Flask(__name__)
@@ -36,15 +41,13 @@ def not_found(e):
 @app.route('/')
 def home():  # Homepage, no values loaded in
 
-    conn = sqlite3.connect(db)
-    cur = conn.cursor()
-    cur = cur
     genreinfo = ["Genre",]
     settinginfo = ["Setting",]
     mechanicinfo = ["Mechanic",]
-    return render_template("home.html", test=1,
+    return render_template("home.html",
                            genreinfo=genreinfo,
-                           settinginfo=settinginfo, mechanicinfo=mechanicinfo)
+                           settinginfo=settinginfo, mechanicinfo=mechanicinfo,
+                           logged=check_logged())
 
 
 @app.route('/results/<settings>')
@@ -91,18 +94,21 @@ def results(settings):
     for i in mchoice:
         resultstosave += '<br>'
         resultstosave += i[0]
+    print(resultstosave)
     return render_template("results.html", gchoice=gchoice,
                            mchoice=mchoice, schoice=schoice, settings=settings,
-                           resultstosave=resultstosave)
+                           resultstosave=resultstosave, logged=check_logged())
 
 
 @app.route('/login')
 def login():
     if 'failed' in session:
         session.clear()
-        return render_template("login.html", failed=True)
+        return render_template("login.html", failed=True, viewfail=False,
+                               logged=check_logged())
     else:
-        return render_template("login.html", failed=False)
+        return render_template("login.html", failed=False, viewfail=False,
+                               logged=check_logged())
 
 
 @app.route('/signup')
@@ -116,7 +122,8 @@ def signup():
     if ('passwordFailed' in session):
         del session['passwordFailed']
         pf = True
-    return render_template('signup.html', usernameFailed=uf, passwordFailed=pf)
+    return render_template('signup.html', usernameFailed=uf, passwordFailed=pf
+                           , logged=check_logged())
 
 
 @app.route('/signupsumbit', methods=["POST"])
@@ -224,19 +231,39 @@ def process():
 def saveResults():
     data = request.get_json()  # retrieve the data sent from JavaScript
     newdata = data['value']
-    conn = sqlite3.connect(db)
-    cur = conn.cursor()
-    id = session['id']
-    print(id, newdata)
-    if id is not None:
-        cur.execute('''UPDATE Account SET res3 = (SELECT res2 FROM Account W
-                    HERE id = ?), res2 = (SELECT res1 FROM Account WHERE i
-                    d = ?), res1 = ? WHERE id = ?''', (1, 1, str(newdata), 1))
+    print('before')
+    if session.get('id') is not None:
+        print('after')
+        conn = sqlite3.connect(db)
+        cur = conn.cursor()
+        id = session['id']
+        cur.execute('''UPDATE Account SET res3 = (SELECT res2 FROM Account
+                    WHERE id = ?), res2 = (SELECT res1 FROM Account WHERE id
+                    = ?), res1 = ? WHERE id = ?''', (id, id, str(newdata), id))
         conn.commit()
         conn.close()
         return jsonify(result="success")
     else:
         return jsonify(result="failed")
+
+
+@app.route('/viewres')
+def viewres():
+    conn = sqlite3.connect(db)
+    cur = conn.cursor()
+    id = session.get('id')
+    if id is not None:
+        cur.execute("SELECT res1, res2, res3 FROM Account WHERE id = ?", (id,))
+        res1, res2, res3 = cur.fetchall()[0]
+        return render_template('viewres.html', res1=res1, res2=res2, res3=res3, logged=check_logged())
+    else:
+        return render_template('login.html', viewfail=True, failed=False, logged=check_logged())
+
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
 
 
 if __name__ == "__main__":

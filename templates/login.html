@@ -6,6 +6,9 @@
             {%if failed == True%}
             <p class='error'>Username or password is incorrect</p>
             {%endif%}
+            {%if viewfail == True%}
+            <p class='error'>Log in to save and view results</p>
+            {%endif%}
 
             <div id="loginbox">
             <label for="username">Username:</label>
