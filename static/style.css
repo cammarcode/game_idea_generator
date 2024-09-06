@@ -220,11 +220,20 @@ label{
 }
 
 .buttonimg{
-    width: 80%
+    width: 70%
 }
 
 .error {
     color: crimson;
+    font-size: x-large;
+    text-align: center;
+    width: 100%;
+    float: left;
+    margin: 0;
+}
+
+.reverseerror {
+    color: rgb(20, 220, 87);
     font-size: x-large;
     text-align: center;
     width: 100%;

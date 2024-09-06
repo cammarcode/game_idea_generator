@@ -9,6 +9,9 @@
             {%if viewfail == True%}
             <p class='error'>Log in to save and view results</p>
             {%endif%}
+            {%if acccreated == True%}
+            <p class='reverseerror'>Account created successfully, Log in here</p>
+            {%endif%}
 
             <div id="loginbox">
             <label for="username">Username:</label>

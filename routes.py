@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, render_template, request, session
-from flask import url_for, redirect
+from flask import url_for, redirect, abort
 import sqlite3
 import random
 from hashlib import sha256
@@ -20,11 +20,13 @@ def generate_salt(length):
     result_str = ''.join(choice(letters) for i in range(length))
     return result_str
 
+
 def check_logged():
     if session.get('id') is not None:
         return True
     else:
         return False
+
 
 ##############################################################################
 app = Flask(__name__)
@@ -35,7 +37,20 @@ app.secret_key = key.key
 
 @app.errorhandler(404)
 def not_found(e):
-    return render_template("404.html")
+    return render_template("error.html", logged=check_logged(),
+                           text="Page not Found"), 404
+
+
+@app.errorhandler(403)
+def not_allowed(e):
+    return render_template("error.html", logged=check_logged(),
+                           text="You do not have access to this page"), 404
+
+
+@app.errorhandler(400)
+def bad_request(e):
+    return render_template("error.html", logged=check_logged(),
+                           text="Malformed Request"), 404
 
 
 @app.route('/')
@@ -57,26 +72,49 @@ def results(settings):
 
     """Settings are a string of letters/numbers which
     represent: genreamount, settingsamount, mechanicamount """
-
-    uvtaf = list(map(int, str(settings).split("n")))
+    try:
+        uvtaf = list(map(int, str(settings).split("n")))
+    except Exception:
+        abort(404)
+    for i in range(3):
+        if uvtaf[i] < 0 or uvtaf[i] > 9:
+            abort(404)
     genreamount, settingamount, mechanicamount, dim = uvtaf
     print(genreamount, settingamount, mechanicamount)
     conn = sqlite3.connect(db)
     cur = conn.cursor()
     counts = [[], [], []]
     if dim == 0:
-        cur.execute("SELECT name, description FROM Genre WHERE _2D = 1")  # add
+        cur.execute("SELECT name, description, id FROM Genre WHERE _2D = 1")
     elif dim == 1:
-        cur.execute("SELECT name, description FROM Genre WHERE _3D = 1")  # add
+        cur.execute("SELECT name, description, id FROM Genre WHERE _3D = 1")
     else:
-        cur.execute("SELECT name, description FROM Genre")  # add conditions he
+        cur.execute("SELECT name, description, id FROM Genre")
     counts[0] = cur.fetchall()
-    cur.execute("SELECT name, description FROM Mechanic")  # add conditions her
-    counts[1] = cur.fetchall()
-    cur.execute("SELECT name, description FROM Setting")  # add conditions here
-    counts[2] = cur.fetchall()
-
     gchoice = list(random.sample(counts[0], genreamount))
+    gids = [i[2] for i in gchoice]
+    # list in sql code from
+    # https://stackoverflow.com/questions/5766230/select-from-sqlite-table-where-rowid-in-list-using-python-sqlite3-db-api-2-0
+    cur.execute(
+                '''SELECT Mechanic.name,
+                Mechanic.description
+                FROM Mechanic
+                WHERE id NOT IN (
+                    SELECT mechanic
+                    FROM GenreMechanic
+                    WHERE genre IN ({replacethis})
+                )'''.format(replacethis=','.join(['?']*len(gids))), gids)
+    counts[1] = cur.fetchall()
+    cur.execute(
+                '''SELECT Setting.name,
+                Setting.description
+                FROM Setting
+                WHERE id NOT IN (
+                    SELECT setting
+                    FROM GenreSetting
+                    WHERE genre IN ({replacethis})
+                )'''.format(replacethis=','.join(['?']*len(gids))), gids)
+    counts[2] = cur.fetchall()
     mchoice = list(random.sample(counts[1],
                                  mechanicamount))
     schoice = list(random.sample(counts[2], settingamount))
@@ -102,13 +140,20 @@ def results(settings):
 
 @app.route('/login')
 def login():
+    if session.get("id") is not None:
+        abort(403)
     if 'failed' in session:
-        session.clear()
+        checkacccr = session.get('acccreated')
+        if checkacccr:
+            session["acccreated"] = False
         return render_template("login.html", failed=True, viewfail=False,
-                               logged=check_logged())
+                               logged=check_logged(), acccreated=checkacccr)
     else:
+        checkacccr = session.get('acccreated')
+        if checkacccr:
+            session["acccreated"] = False
         return render_template("login.html", failed=False, viewfail=False,
-                               logged=check_logged())
+                               logged=check_logged(), acccreated=checkacccr)
 
 
 @app.route('/signup')
@@ -122,8 +167,8 @@ def signup():
     if ('passwordFailed' in session):
         del session['passwordFailed']
         pf = True
-    return render_template('signup.html', usernameFailed=uf, passwordFailed=pf
-                           , logged=check_logged())
+    return render_template('signup.html', usernameFailed=uf, passwordFailed=pf,
+                           logged=check_logged())
 
 
 @app.route('/signupsumbit', methods=["POST"])
@@ -150,6 +195,7 @@ def signupsubmit():
             cur.execute(uvtaf, (username, hashed, salt,))
             conn.commit()
             session.clear()
+            session['acccreated'] = True
             return redirect(url_for('login'))
     if len(usernametest) != 0:
         session['usernameFailed'] = True
@@ -160,6 +206,9 @@ def signupsubmit():
 
 @app.route('/loginsubmit', methods=['POST'])
 def loginsubmit():
+    if session.get("id") is not None:
+        abort(403)
+    session.clear()
     username = request.form.get('username')
     password = request.form.get('password')
     conn = sqlite3.connect(db)
@@ -194,18 +243,37 @@ def process():
     cur = conn.cursor()
     counts = [[], [], []]
     if dim == 0:
-        cur.execute("SELECT name, description FROM Genre WHERE _2D = 1")  # add
+        cur.execute("SELECT name, description, id FROM Genre WHERE _2D = 1")
     elif dim == 1:
-        cur.execute("SELECT name, description FROM Genre WHERE _3D = 1")  # add
+        cur.execute("SELECT name, description, id FROM Genre WHERE _3D = 1")
     else:
-        cur.execute("SELECT name, description FROM Genre")  # add conditions he
+        cur.execute("SELECT name, description, id FROM Genre")
     counts[0] = cur.fetchall()
-    cur.execute("SELECT name, description FROM Mechanic")  # add conditions her
+    gchoice = list(random.sample(counts[0], genreamount))
+    gids = [i[2] for i in gchoice]
+    # list in sql code from
+    # https://stackoverflow.com/questions/5766230/select-from-sqlite-table-where-rowid-in-list-using-python-sqlite3-db-api-2-0
+    cur.execute(
+                '''SELECT Mechanic.name,
+                Mechanic.description
+                FROM Mechanic
+                WHERE id NOT IN (
+                    SELECT mechanic
+                    FROM GenreMechanic
+                    WHERE genre IN ({replacethis})
+                )'''.format(replacethis=','.join(['?']*len(gids))), gids)
     counts[1] = cur.fetchall()
-    cur.execute("SELECT name, description FROM Setting")  # add conditions here
+    cur.execute(
+                '''SELECT Setting.name,
+                Setting.description
+                FROM Setting
+                WHERE id NOT IN (
+                    SELECT setting
+                    FROM GenreSetting
+                    WHERE genre IN ({replacethis})
+                )'''.format(replacethis=','.join(['?']*len(gids))), gids)
     counts[2] = cur.fetchall()
 
-    gchoice = list(random.sample(counts[0], genreamount))
     mchoice = list(random.sample(counts[1],
                                  mechanicamount))
     schoice = list(random.sample(counts[2], settingamount))
@@ -255,9 +323,10 @@ def viewres():
     if id is not None:
         cur.execute("SELECT res1, res2, res3 FROM Account WHERE id = ?", (id,))
         res1, res2, res3 = cur.fetchall()[0]
-        return render_template('viewres.html', res1=res1, res2=res2, res3=res3, logged=check_logged())
+        return render_template('viewres.html', res1=res1, res2=res2, res3=res3,
+                               logged=check_logged())
     else:
-        return render_template('login.html', viewfail=True, failed=False, logged=check_logged())
+        abort(403)
 
 
 @app.route('/logout', methods=['POST'])
