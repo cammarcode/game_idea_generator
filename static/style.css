@@ -250,3 +250,9 @@ label{
     height: 90%;
     background-color:#8ACDEA;
 }
+
+.lstitle{
+    font-size: xx-large;
+    text-align: center;
+    width: 100%;
+}

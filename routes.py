@@ -120,15 +120,15 @@ def results(settings):
     schoice = list(random.sample(counts[2], settingamount))
     # This is a string version of the results which can be used to save to db
     resultstosave = ''
-    resultstosave += "Genres:"
+    resultstosave += "Genres:<br>"
     for i in gchoice:
         resultstosave += '<br>'
         resultstosave += i[0]
-    resultstosave += "<br>Settings:"
+    resultstosave += "<br>Settings:<br>"
     for i in schoice:
         resultstosave += '<br>'
         resultstosave += i[0]
-    resultstosave += '<br>Mechanics:'
+    resultstosave += '<br>Mechanics:<br>'
     for i in mchoice:
         resultstosave += '<br>'
         resultstosave += i[0]
@@ -191,8 +191,10 @@ def signupsubmit():
             hasher = sha256()
             hasher.update(password1.encode())
             hashed = hasher.hexdigest()
-            uvtaf = 'INSERT INTO Account (username,hash,salt) VALUES (?,?,?)'
-            cur.execute(uvtaf, (username, hashed, salt,))
+            s = "No saved results"
+            uvtaf = '''INSERT INTO Account (username,hash,salt,res1,res2,res3)
+                       VALUES (?,?,?,?,?,?)'''
+            cur.execute(uvtaf, (username, hashed, salt, s, s, s))
             conn.commit()
             session.clear()
             session['acccreated'] = True
@@ -279,15 +281,15 @@ def process():
     schoice = list(random.sample(counts[2], settingamount))
     # This is a string version of the results which can be used to save to db
     resultstosave = ''
-    resultstosave += "Genres:"
+    resultstosave += "Genres:<br>"
     for i in gchoice:
         resultstosave += '<br>'
         resultstosave += i[0]
-    resultstosave += "<br>Settings:"
+    resultstosave += "<br>Settings:<br>"
     for i in schoice:
         resultstosave += '<br>'
         resultstosave += i[0]
-    resultstosave += '<br>Mechanics:'
+    resultstosave += '<br>Mechanics:<br>'
     for i in mchoice:
         resultstosave += '<br>'
         resultstosave += i[0]

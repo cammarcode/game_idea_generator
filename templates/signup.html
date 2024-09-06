@@ -1,9 +1,10 @@
 {%extends "layout.html" %}
 {% block content %}
-<p class="spacer">hey bud</p>
+
 
 <form action="{{url_for('signupsubmit')}}" method="POST">
     <div class="blankpage">
+    <p class="lstitle">Sign up</p>
     {%if usernameFailed == True%}
     <p class='error'>Username is already in use</p>
     {%endif%}

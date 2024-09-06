@@ -15,7 +15,7 @@
 <script type="text/javascript">
 
     var value = "oh no"
-    var resultstosave = "this is broken"
+    var resultstosave = "broken"
 
     window.onload = function() {
         value = "{{settings}}"; 
@@ -24,23 +24,24 @@
 
 
     function saveResults(){
-        console.log(resultstosave);
-        $.ajax({ 
-            url: '/saveResults', 
-            type: 'POST', 
-            contentType: 'application/json', 
-            data: JSON.stringify({ 'value': resultstosave }),
-            dataType: 'json',
-            success: function(response) { 
-                console.log("here we are")
+        if(resultstosave != "broken"){
+            console.log(resultstosave);
+            $.ajax({ 
+                url: '/saveResults', 
+                type: 'POST', 
+                contentType: 'application/json', 
+                data: JSON.stringify({ 'value': resultstosave }),
+                dataType: 'json',
+                success: function(response) { 
+                    console.log("here we are")
 
-            }, 
-            error: function(error) { 
-                console.log(error); 
-                console.log('uh oh');
-            } 
-        });
-        
+                }, 
+                error: function(error) { 
+                    console.log(error); 
+                    console.log('uh oh');
+                } 
+            });
+        }
     }
 
     function sendData(){ 
@@ -81,7 +82,7 @@
 
 </script>
 
-<p class="spacer">Uh Oh! something's broken. Call 111 for assistance</p>
+
 
 <div class="page">
 

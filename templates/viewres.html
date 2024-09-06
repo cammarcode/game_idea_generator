@@ -3,12 +3,17 @@
 <script>
     window.onload = function() {
         // javascript hates ampersands so this solution works
-        res1 = "{{res1}}".replaceAll('&','b').replaceAll("bamp;lt;brbamp;gt;", "<br>"); 
-
+        // there is also a quirk where rerolled results have & but others have &amp
+        console.log("{{res1}}")
+        res1 = "{{res1}}".replaceAll('&','b').replaceAll("bamp;lt;brbamp;gt;", "<br>").replaceAll("blt;brbgt;", "<br>"); 
         document.getElementById('res1').innerHTML = res1;
+        res2 = "{{res2}}".replaceAll('&','b').replaceAll("bamp;lt;brbamp;gt;", "<br>").replaceAll("blt;brbgt;", "<br>"); 
+        document.getElementById('res2').innerHTML = res2;
+        res3 = "{{res3}}".replaceAll('&','b').replaceAll("bamp;lt;brbamp;gt;", "<br>").replaceAll("blt;brbgt;", "<br>");
+        document.getElementById('res3').innerHTML = res3;
     }
 </script>
-<p class="spacer">hey bud</p>
+
 <div class="blankpage">
     <div id="res1" class='resultdiv'></div>
     <div id="res2" class='resultdiv'></div>
