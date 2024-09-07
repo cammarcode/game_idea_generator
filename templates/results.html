@@ -89,7 +89,7 @@
     <div class="buttongrid">
     <button id = "reroll" class="settingbutton" onclick="sendData()">Reroll</button>
     <button id = "saveres" class="settingbutton" onclick="saveResults()">Save Results</button>
-    <button id = "viewsavedres" class="settingbutton" onclick="goToResults()">View Saved Results</button>
+    <button id = "viewsavedres" class="settingbutton" {%if logged == True %} onclick="goToResults() "{% endif %}>View Saved Results</button>
     </div>
 
 <div id = 'Genrebox' class = 'multicontainer'>

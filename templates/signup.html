@@ -3,23 +3,28 @@
 
 
 <form action="{{url_for('signupsubmit')}}" method="POST">
+    
     <div class="blankpage">
     <p class="lstitle">Sign up</p>
-    {%if usernameFailed == True%}
-    <p class='error'>Username is already in use</p>
-    {%endif%}
-    {%if passwordFailed == True%}
-    <p class='error'>Passwords do not match</p>
-    {%endif%}
+    
+    <div>
+        {%if usernameFailed == True%}
+        <p class='error'>Username is already in use</p>
+        {%endif%}
+        {%if passwordFailed == True%}
+        <p class='error'>Passwords do not match</p>
+        {%endif%}
+    </div>
+
     <div id="signupbox">
     <label for="username">Username:</label>
-    <input type="text" name="username" class="lstext">
+    <input type="text" name="username" class="lstext" maxlength=20>
 
     <label for="password1">Password:</label>
-    <input type="password" name="password1" class="lstext">
+    <input type="password" name="password1" class="lstext" maxlength=20>
 
     <label for="password2">Confirm Password:</label>
-    <input type="password" name="password2" class="lstext">
+    <input type="password" name="password2" class="lstext" maxlength=20>
 
     <input type="submit" class="lstext">
 

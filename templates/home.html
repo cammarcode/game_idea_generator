@@ -120,7 +120,7 @@
     <div class="buttongrid">
     <button id = "randomize" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">RANDOMIZE</button>
     <button id = "2d3d" class="settingbutton" onclick="changeDim()">2D</button>
-    <button id = "viewsavedres" class="settingbutton" onclick="goToResults()">View Saved Results</button>
+    <button id = "viewsavedres" class="settingbutton" {%if logged == True %} onclick="goToResults() "{% endif %}>View Saved Results</button>
     </div>
 
 <div id = 'Genrebox' class = 'multicontainer'>

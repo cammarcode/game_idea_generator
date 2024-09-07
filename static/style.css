@@ -184,9 +184,11 @@ a {
 /* Thanks, w3schools! */
 
 .blankpage{
+    display: grid;
     height: 94.5vh;
     align-content: center;
     padding: 0;
+    grid-template-rows: 10% 10% 80%;
 }
 
 #signupbox{
@@ -194,10 +196,9 @@ a {
     row-gap: 3%;
     margin-left: 30%;
     margin-right: 30%;
-    margin-top: 5%;
-    margin-bottom: 5%;
+    /* rows are: label, input, label, input, label, input, */
     grid-template-rows: 5% 8% 5% 8% 5% 8% 10% 5%;
-    height: 100%;
+    height: auto;
 }
 
 #loginbox{
@@ -205,9 +206,8 @@ a {
     row-gap: 3%;
     margin-left: 30%;
     margin-right: 30%;
-    margin-top: 5%;
     grid-template-rows: 5% 8% 5% 8% 10% 5%;
-    height: 100%;
+    height: auto;
 }
 
 .lstext{
@@ -228,7 +228,6 @@ label{
     font-size: x-large;
     text-align: center;
     width: 100%;
-    float: left;
     margin: 0;
 }
 
@@ -237,10 +236,10 @@ label{
     font-size: x-large;
     text-align: center;
     width: 100%;
-    float: left;
     margin: 0;
 }
 
+/* box for saved results*/
 .resultdiv {
     float: left;
     width: 28%;

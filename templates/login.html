@@ -2,29 +2,32 @@
 {% block content %}
 
     <form action="{{url_for('loginsubmit')}}" method="POST">
+        
         <div class="blankpage">
             <p class="lstitle">Login</p>
-            {%if failed == True%}
-            <p class='error'>Username or password is incorrect</p>
-            {%endif%}
-            {%if viewfail == True%}
-            <p class='error'>Log in to save and view results</p>
-            {%endif%}
-            {%if acccreated == True%}
-            <p class='reverseerror'>Account created successfully, Log in here</p>
-            {%endif%}
+            
+            <div>
+                {%if failed == True%}
+                <p class='error'>Username or password is incorrect</p>
+                {%endif%}
+                {%if viewfail == True%}
+                <p class='error'>Log in to save and view results</p>
+                {%endif%}
+                {%if acccreated == True%}
+                <p class='reverseerror'>Account created successfully, Log in here</p>
+                {%endif%}
+            </div>
 
             <div id="loginbox">
             <label for="username">Username:</label>
-            <input type="text" name="username" class="lstext">
+            <input type="text" name="username" class="lstext" maxlength=20>
         
             <label for="password">Password:</label>
-            <input type="password" name="password" class="lstext">
+            <input type="password" name="password" class="lstext" maxlength=20>
         
             <input type="submit" class="lstext">
         
-            <p>Don't have an account? <a href="/signup" style="color:blue;">Sign up here.</a></p>
+            <p>Don't have an account? <a href="/signup" style="color:blue;" maxlength=20>Sign up here.</a></p>
             </div>
     </form>
-<p>login</p>
 {%endblock%}
