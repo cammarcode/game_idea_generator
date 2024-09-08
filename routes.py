@@ -68,19 +68,16 @@ def home():  # Homepage, no values loaded in
 @app.route('/results/<settings>')
 def results(settings):
 
-    print("we here")
-
-    """Settings are a string of letters/numbers which
-    represent: genreamount, settingsamount, mechanicamount """
+    # Settings are a string of letters/numbers which
+    # represent: genreamount, settingsamount, mechanicamount
     try:
         uvtaf = list(map(int, str(settings).split("n")))
     except Exception:
-        abort(404)
+        abort(400)
     for i in range(3):
         if uvtaf[i] < 0 or uvtaf[i] > 9:
-            abort(404)
+            abort(400)
     genreamount, settingamount, mechanicamount, dim = uvtaf
-    print(genreamount, settingamount, mechanicamount)
     conn = sqlite3.connect(db)
     cur = conn.cursor()
     counts = [[], [], []]
@@ -132,7 +129,6 @@ def results(settings):
     for i in mchoice:
         resultstosave += '<br>'
         resultstosave += i[0]
-    print(resultstosave)
     return render_template("results.html", gchoice=gchoice,
                            mchoice=mchoice, schoice=schoice, settings=settings,
                            resultstosave=resultstosave, logged=check_logged())
@@ -236,11 +232,8 @@ def process():
     data = request.get_json()  # retrieve the data sent from JavaScript
     settingsfromurl = data['value']
 
-    print(settingsfromurl)
-
     uvtaf = list(map(int, str(settingsfromurl).split("n")))
     genreamount, settingamount, mechanicamount, dim = uvtaf
-    print(genreamount, settingamount, mechanicamount)
     conn = sqlite3.connect(db)
     cur = conn.cursor()
     counts = [[], [], []]
@@ -301,9 +294,7 @@ def process():
 def saveResults():
     data = request.get_json()  # retrieve the data sent from JavaScript
     newdata = data['value']
-    print('before')
     if session.get('id') is not None:
-        print('after')
         conn = sqlite3.connect(db)
         cur = conn.cursor()
         id = session['id']

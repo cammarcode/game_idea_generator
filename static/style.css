@@ -15,24 +15,24 @@ body {
     position: fixed;
     top: 0;
     z-index: 1;
+    height:5.5vh;
 }
 
 
 
 .navitem {
-    
+    display: flex;
     margin: 0;
     color: white;
-    text-align: center;
-    top: 50%;
-    padding: 1vh 0.7vh;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
-    font-size: 3vh;
+    font-size: 2.7vmin;
     color:#000000;
     font-family: 'Lato', sans-serif;
     width: 10%;
     z-index: 1;
-    
+    height: 100%;
 }
 
 
@@ -67,10 +67,9 @@ body {
 }
 
 #navtitle {
-    padding-top: 0.5vh;
-    padding-bottom: 0.5vh;
+    height: 100%;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 3.9vh;
+    font-size: 3.5vmin;
     background-color:#536B78;
     float: left;
     width: 35%;
@@ -92,6 +91,7 @@ a {
     position: relative;
     height: 94.5vh;
     width: 100%;
+    font-size: 3vmin;
     
 }
 
@@ -110,7 +110,7 @@ a {
 }
 
 .insidetext {
-    font-size: 3vh;
+    font-size: 100%;
     padding-top: 2%;
     padding-bottom: 2%;
     text-align: center;
@@ -178,8 +178,8 @@ a {
     /* Show the tooltip text when you mouse over the tooltip container */
     .tooltip:hover .tooltiptext {
         visibility: visible;
-        font-size: large;
-        opacity: 1;
+        font-size:50%;
+        opacity: 1
     }
 /* Thanks, w3schools! */
 
@@ -211,11 +211,11 @@ a {
 }
 
 .lstext{
-    font-size: x-large;
+    font-size: 3vmin;
 }
 
 label{
-    font-size: x-large;
+    font-size: 3vmin;
     margin-top: 3%;
 }
 
@@ -225,7 +225,7 @@ label{
 
 .error {
     color: crimson;
-    font-size: x-large;
+    font-size: 3vmin;
     text-align: center;
     width: 100%;
     margin: 0;
@@ -251,7 +251,9 @@ label{
 }
 
 .lstitle{
-    font-size: xx-large;
-    text-align: center;
+    display: flex;
+    font-size: 5vmin;
+    align-items: center;
+    justify-content: center;
     width: 100%;
 }
