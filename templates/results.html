@@ -52,8 +52,7 @@
             data: JSON.stringify({ 'value': value }),
             dataType: 'json', 
             success: function(response) { 
-                console.log("here we are")
-                console.log(response.result[0][0]);
+                /* Gets fresh data from python, then replaces each already made */
                 for (i=0; i < (document.getElementById('Genrebox').children).length;  i++){
                     (document.getElementById('Genrebox').children[i].children[0]).innerHTML = response.result[0][i][0];
                     (document.getElementById('Genrebox').children[i].children[1]).innerHTML = response.result[0][i][1];
@@ -88,8 +87,8 @@
 
     <div class="buttongrid">
     <button id = "reroll" class="settingbutton" onclick="sendData()">Reroll</button>
-    <button id = "saveres" class="settingbutton" onclick="saveResults()">Save Results</button>
-    <button id = "viewsavedres" class="settingbutton" {%if logged == True %} onclick="goToResults() "{% endif %}>View Saved Results</button>
+    <button id = "saveres" class="settingbutton" onclick="saveResults()" {%if logged == False %}style="background-color: #909090"{%endif%}>Save Results</button>
+    <button id = "viewsavedres" class="settingbutton" {%if logged == True %} onclick="goToResults() "{%else%} style="background-color: #909090"{% endif %}>View Saved Results</button>
     </div>
 
 <div id = 'Genrebox' class = 'multicontainer'>

@@ -89,8 +89,8 @@
             }
         }
     }
-
-    var dim = 0
+    
+    var dim = 0 /* dim is 2D/3D option, 0 for 2d 1 for 3d 2 for both */
 
     function changeDim(){
         if(dim==0){
@@ -120,7 +120,7 @@
     <div class="buttongrid">
     <button id = "randomize" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">RANDOMIZE</button>
     <button id = "2d3d" class="settingbutton" onclick="changeDim()">2D</button>
-    <button id = "viewsavedres" class="settingbutton" {%if logged == True %} onclick="goToResults() "{% endif %}>View Saved Results</button>
+    <button id = "viewsavedres" class="settingbutton" {%if logged == True %} onclick="goToResults() " {%else%} style="background-color: #909090"{% endif %}>View Saved Results</button>
     </div>
 
 <div id = 'Genrebox' class = 'multicontainer'>

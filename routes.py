@@ -71,13 +71,15 @@ def results(settings):
     # Settings are a string of letters/numbers which
     # represent: genreamount, settingsamount, mechanicamount
     try:
-        uvtaf = list(map(int, str(settings).split("n")))
+        info = list(map(int, str(settings).split("n")))
     except Exception:
         abort(400)
     for i in range(3):
-        if uvtaf[i] < 0 or uvtaf[i] > 9:
+        if info[i] < 0 or info[i] > 9:
             abort(400)
-    genreamount, settingamount, mechanicamount, dim = uvtaf
+    if info[3] < 0 or info[3] > 2:
+        abort(400)
+    genreamount, settingamount, mechanicamount, dim = info
     conn = sqlite3.connect(db)
     cur = conn.cursor()
     counts = [[], [], []]
@@ -116,18 +118,19 @@ def results(settings):
                                  mechanicamount))
     schoice = list(random.sample(counts[2], settingamount))
     # This is a string version of the results which can be used to save to db
+    # ~~s will be replaced with <br> to create proper spacing
     resultstosave = ''
-    resultstosave += "Genres:<br>"
+    resultstosave += "Genres:~~"
     for i in gchoice:
-        resultstosave += '<br>'
+        resultstosave += '~~'
         resultstosave += i[0]
-    resultstosave += "<br>Settings:<br>"
+    resultstosave += "~~~~Settings:~~"
     for i in schoice:
-        resultstosave += '<br>'
+        resultstosave += '~~'
         resultstosave += i[0]
-    resultstosave += '<br>Mechanics:<br>'
+    resultstosave += '~~~~Mechanics:~~'
     for i in mchoice:
-        resultstosave += '<br>'
+        resultstosave += '~~'
         resultstosave += i[0]
     return render_template("results.html", gchoice=gchoice,
                            mchoice=mchoice, schoice=schoice, settings=settings,
@@ -142,6 +145,7 @@ def login():
         checkacccr = session.get('acccreated')
         if checkacccr:
             session["acccreated"] = False
+            # remove from session after storing variable so it's gone next time
         return render_template("login.html", failed=True, viewfail=False,
                                logged=check_logged(), acccreated=checkacccr)
     else:
@@ -274,17 +278,17 @@ def process():
     schoice = list(random.sample(counts[2], settingamount))
     # This is a string version of the results which can be used to save to db
     resultstosave = ''
-    resultstosave += "Genres:<br>"
+    resultstosave += "Genres:~~"
     for i in gchoice:
-        resultstosave += '<br>'
+        resultstosave += '~~'
         resultstosave += i[0]
-    resultstosave += "<br>Settings:<br>"
+    resultstosave += "~~~~Settings:~~"
     for i in schoice:
-        resultstosave += '<br>'
+        resultstosave += '~~'
         resultstosave += i[0]
-    resultstosave += '<br>Mechanics:<br>'
+    resultstosave += '~~~~Mechanics:~~'
     for i in mchoice:
-        resultstosave += '<br>'
+        resultstosave += '~~'
         resultstosave += i[0]
     return jsonify(result=[gchoice, mchoice, schoice, resultstosave])
     # return to js
