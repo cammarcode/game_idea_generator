@@ -28,6 +28,15 @@ def check_logged():
         return False
 
 
+def nonetostr(value):
+    result = session.get(value)
+    if result is None:
+        return ""
+    else:
+        del session[value]
+        return result
+
+
 ##############################################################################
 app = Flask(__name__)
 db = "gamedb.db"
@@ -44,13 +53,13 @@ def not_found(e):
 @app.errorhandler(403)
 def not_allowed(e):
     return render_template("error.html", logged=check_logged(),
-                           text="You do not have access to this page"), 404
+                           text="You do not have access to this page"), 403
 
 
 @app.errorhandler(400)
 def bad_request(e):
     return render_template("error.html", logged=check_logged(),
-                           text="Malformed Request"), 404
+                           text="Malformed Request"), 400
 
 
 @app.route('/')
@@ -161,14 +170,20 @@ def signup():
     # Check for if password or username failed, and pass that on to html
     uf = False
     pf = False
+    un = nonetostr('username')
+    p1 = nonetostr('p1')
+    p2 = nonetostr('p2')
     if ('usernameFailed' in session):
         del session['usernameFailed']
         uf = True
+        un = ""
     if ('passwordFailed' in session):
         del session['passwordFailed']
         pf = True
+        p1 = ""
+        p2 = ""
     return render_template('signup.html', usernameFailed=uf, passwordFailed=pf,
-                           logged=check_logged())
+                           logged=check_logged(), username=un, p1=p1, p2=p2)
 
 
 @app.route('/signupsumbit', methods=["POST"])
@@ -203,6 +218,9 @@ def signupsubmit():
         session['usernameFailed'] = True
     if password1 != password2:
         session['passwordFailed'] = True
+    session["username"] = username
+    session["p1"] = password1
+    session["p2"] = password2
     return redirect(url_for('signup'))
 
 

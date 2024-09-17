@@ -267,3 +267,10 @@ label{
     justify-content: center;
     width: 100%;
 }
+
+.errorfont{
+    width: 100%;
+    top: 20vh;
+    text-align: center;
+    font-size: 3.5vmin;
+}
