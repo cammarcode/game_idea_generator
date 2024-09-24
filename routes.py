@@ -6,8 +6,6 @@ from hashlib import sha256
 import key
 from random import choice
 
-uvtaf = 0  # uselessvariabletoavoidflake
-
 
 def remove_brackets(thing):
     return thing[0]
@@ -28,13 +26,29 @@ def check_logged():
         return False
 
 
-def nonetostr(value):
+def session_to_str(value):
     result = session.get(value)
     if result is None:
         return ""
     else:
         del session[value]
         return result
+
+
+def quick_query(query, values):
+    conn = sqlite3.connect(db)
+    cur = conn.cursor()
+    cur.execute(query, values)
+    result = cur.fetchall()
+    conn.close()
+    return result
+
+
+def check_length(values):
+    for value in values:
+        if len(value) > 20:
+            return False
+    return True
 
 
 ##############################################################################
@@ -59,18 +73,19 @@ def not_allowed(e):
 @app.errorhandler(400)
 def bad_request(e):
     return render_template("error.html", logged=check_logged(),
-                           text="Malformed Request"), 400
+                           text="Bad Request, the url may be invalid."), 400
 
 
 @app.route('/')
 def home():  # Homepage, no values loaded in
 
-    genreinfo = ["Genre",]
-    settinginfo = ["Setting",]
-    mechanicinfo = ["Mechanic",]
+    genre_info = ["Genre",]
+    setting_info = ["Setting",]
+    mechanic_info = ["Mechanic",]
     return render_template("home.html",
-                           genreinfo=genreinfo,
-                           settinginfo=settinginfo, mechanicinfo=mechanicinfo,
+                           genre_info=genre_info,
+                           setting_info=setting_info,
+                           mechanic_info=mechanic_info,
                            logged=check_logged())
 
 
@@ -88,22 +103,24 @@ def results(settings):
             abort(400)
     if info[3] < 0 or info[3] > 2:
         abort(400)
-    genreamount, settingamount, mechanicamount, dim = info
-    conn = sqlite3.connect(db)
-    cur = conn.cursor()
-    counts = [[], [], []]
+    genre_amount, setting_amount, mechanic_amount, dim = info
+
+    box_lists = [[], [], []]
     if dim == 0:
-        cur.execute("SELECT name, description, id FROM Genre WHERE _2D = 1")
+        box_lists[0] = quick_query('''SELECT name, description, id FROM Genre
+                                   WHERE _2D = 1''', ())
     elif dim == 1:
-        cur.execute("SELECT name, description, id FROM Genre WHERE _3D = 1")
+        box_lists[0] = quick_query('''SELECT name, description, id FROM
+                                   Genre WHERE _3D = 1''', ())
     else:
-        cur.execute("SELECT name, description, id FROM Genre")
-    counts[0] = cur.fetchall()
-    gchoice = list(random.sample(counts[0], genreamount))
-    gids = [i[2] for i in gchoice]
+        box_lists[0] = quick_query("SELECT name, description, id FROM Genre",
+                                   ())
+
+    genre_choice = list(random.sample(box_lists[0], genre_amount))
+    genre_ids = [i[2] for i in genre_choice]
     # list in sql code from
     # https://stackoverflow.com/questions/5766230/select-from-sqlite-table-where-rowid-in-list-using-python-sqlite3-db-api-2-0
-    cur.execute(
+    box_lists[1] = quick_query(
                 '''SELECT Mechanic.name,
                 Mechanic.description
                 FROM Mechanic
@@ -111,9 +128,9 @@ def results(settings):
                     SELECT mechanic
                     FROM GenreMechanic
                     WHERE genre IN ({replacethis})
-                )'''.format(replacethis=','.join(['?']*len(gids))), gids)
-    counts[1] = cur.fetchall()
-    cur.execute(
+                )'''.format(replacethis=','.join(['?']*len(genre_ids))),
+                genre_ids)
+    box_lists[2] = quick_query(
                 '''SELECT Setting.name,
                 Setting.description
                 FROM Setting
@@ -121,28 +138,29 @@ def results(settings):
                     SELECT setting
                     FROM GenreSetting
                     WHERE genre IN ({replacethis})
-                )'''.format(replacethis=','.join(['?']*len(gids))), gids)
-    counts[2] = cur.fetchall()
-    mchoice = list(random.sample(counts[1],
-                                 mechanicamount))
-    schoice = list(random.sample(counts[2], settingamount))
+                )'''.format(replacethis=','.join(['?']*len(genre_ids))),
+                genre_ids)
+    mechanic_choice = list(random.sample(box_lists[1],
+                           mechanic_amount))
+    setting_choice = list(random.sample(box_lists[2], setting_amount))
     # This is a string version of the results which can be used to save to db
     # ~~s will be replaced with <br> to create proper spacing
     resultstosave = ''
     resultstosave += "Genres:~~"
-    for i in gchoice:
+    for i in genre_choice:
         resultstosave += '~~'
         resultstosave += i[0]
     resultstosave += "~~~~Settings:~~"
-    for i in schoice:
+    for i in setting_choice:
         resultstosave += '~~'
         resultstosave += i[0]
     resultstosave += '~~~~Mechanics:~~'
-    for i in mchoice:
+    for i in mechanic_choice:
         resultstosave += '~~'
         resultstosave += i[0]
-    return render_template("results.html", gchoice=gchoice,
-                           mchoice=mchoice, schoice=schoice, settings=settings,
+    return render_template("results.html", genre_choice=genre_choice,
+                           mechanic_choice=mechanic_choice,
+                           setting_choice=setting_choice, settings=settings,
                            resultstosave=resultstosave, logged=check_logged())
 
 
@@ -151,39 +169,44 @@ def login():
     if session.get("id") is not None:
         abort(403)
     if 'failed' in session:
-        checkacccr = session.get('acccreated')
-        if checkacccr:
-            session["acccreated"] = False
+        account_created = session.get('account_created')
+        if account_created:
+            session["account_created"] = False
             # remove from session after storing variable so it's gone next time
         return render_template("login.html", failed=True, viewfail=False,
-                               logged=check_logged(), acccreated=checkacccr)
+                               logged=check_logged(),
+                               account_created=account_created)
     else:
-        checkacccr = session.get('acccreated')
-        if checkacccr:
-            session["acccreated"] = False
+        account_created = session.get('account_created')
+        if account_created:
+            session["account_created"] = False
         return render_template("login.html", failed=False, viewfail=False,
-                               logged=check_logged(), acccreated=checkacccr)
+                               logged=check_logged(),
+                               account_created=account_created)
 
 
 @app.route('/signup')
 def signup():
     # Check for if password or username failed, and pass that on to html
-    uf = False
-    pf = False
-    un = nonetostr('username')
-    p1 = nonetostr('p1')
-    p2 = nonetostr('p2')
-    if ('usernameFailed' in session):
-        del session['usernameFailed']
-        uf = True
-        un = ""
-    if ('passwordFailed' in session):
-        del session['passwordFailed']
-        pf = True
-        p1 = ""
-        p2 = ""
-    return render_template('signup.html', usernameFailed=uf, passwordFailed=pf,
-                           logged=check_logged(), username=un, p1=p1, p2=p2)
+    # It will toggle the errors to visible
+    username_failed = False
+    password_failed = False
+    username = session_to_str('username')
+    password1 = session_to_str('p1')
+    password2 = session_to_str('p2')
+    if ('username_failed' in session):
+        del session['username_failed']
+        username_failed = True
+        username = ""
+    if ('password_failed' in session):
+        del session['password_failed']
+        password_failed = True
+        password1 = ""
+        password2 = ""
+    return render_template('signup.html', username_failed=username_failed,
+                           password_failed=password_failed,
+                           logged=check_logged(), username=username,
+                           password1=password1, password2=password2)
 
 
 @app.route('/signupsumbit', methods=["POST"])
@@ -192,13 +215,12 @@ def signupsubmit():
     password1 = request.form.get('password1')
     password2 = request.form.get('password2')
     username = request.form.get('username')
-    conn = sqlite3.connect(db)
-    cur = conn.cursor()
     # Ensure that no other users have the same name
-    cur.execute('SELECT id FROM Account WHERE username = ?', (username,))
-    usernametest = cur.fetchall()
-    if password1 == password2:
-        if len(usernametest) == 0:
+    query = 'SELECT id FROM Account WHERE username = ?'
+    username_test = quick_query(query, (username,))
+    password_list = [password1, password2, username]
+    if password1 == password2 and check_length(password_list):
+        if len(username_test) == 0:
             # Generate a salt, add it to password, hash,
             # and then insert hash and salt into account table
             salt = generate_salt(6)
@@ -206,18 +228,23 @@ def signupsubmit():
             hasher = sha256()
             hasher.update(password1.encode())
             hashed = hasher.hexdigest()
-            s = "No saved results"
-            uvtaf = '''INSERT INTO Account (username,hash,salt,res1,res2,res3)
+            default_text = "No saved results"
+            conn = sqlite3.connect(db)
+            cur = conn.cursor()
+            query = '''INSERT INTO Account (username,hash,salt,res1,res2,res3)
                        VALUES (?,?,?,?,?,?)'''
-            cur.execute(uvtaf, (username, hashed, salt, s, s, s))
+            cur.execute(query, (username, hashed, salt, default_text,
+                                default_text, default_text))
             conn.commit()
             session.clear()
-            session['acccreated'] = True
+            session['account_created'] = True
             return redirect(url_for('login'))
-    if len(usernametest) != 0:
-        session['usernameFailed'] = True
+    if not check_length([password1, password2, username]):
+        abort(400)
+    if len(username_test) != 0:
+        session['username_failed'] = True
     if password1 != password2:
-        session['passwordFailed'] = True
+        session['password_failed'] = True
     session["username"] = username
     session["p1"] = password1
     session["p2"] = password2
@@ -231,11 +258,8 @@ def loginsubmit():
     session.clear()
     username = request.form.get('username')
     password = request.form.get('password')
-    conn = sqlite3.connect(db)
-    cur = conn.cursor()
-    cur.execute('SELECT id, hash, salt FROM Account WHERE username = ?',
-                (username,))
-    data = cur.fetchone()
+    data = quick_query('SELECT id, hash, salt FROM Account WHERE username = ?',
+                       (username,))
     if data is not None:
         # Hash the password plus salt, compare to db
         hasher = sha256()
@@ -252,77 +276,77 @@ def loginsubmit():
 @app.route('/process', methods=['POST'])
 def process():
     data = request.get_json()  # retrieve the data sent from JavaScript
-    settingsfromurl = data['value']
+    settings_from_url = data['value']
 
-    uvtaf = list(map(int, str(settingsfromurl).split("n")))
-    genreamount, settingamount, mechanicamount, dim = uvtaf
+    info = list(map(int, str(settings_from_url).split("n")))
+    genre_amount, setting_amount, mechanic_amount, dim = info
     conn = sqlite3.connect(db)
     cur = conn.cursor()
     counts = [[], [], []]
     if dim == 0:
-        cur.execute("SELECT name, description, id FROM Genre WHERE _2D = 1")
+        query = "SELECT name, description, id FROM Genre WHERE _2D = 1"
     elif dim == 1:
-        cur.execute("SELECT name, description, id FROM Genre WHERE _3D = 1")
+        query = "SELECT name, description, id FROM Genre WHERE _3D = 1"
     else:
-        cur.execute("SELECT name, description, id FROM Genre")
-    counts[0] = cur.fetchall()
-    gchoice = list(random.sample(counts[0], genreamount))
-    gids = [i[2] for i in gchoice]
+        query = "SELECT name, description, id FROM Genre"
+    counts[0] = quick_query(query, ())
+    genre_choice = list(random.sample(counts[0], genre_amount))
+    genre_ids = [i[2] for i in genre_choice]
     # list in sql code from
     # https://stackoverflow.com/questions/5766230/select-from-sqlite-table-where-rowid-in-list-using-python-sqlite3-db-api-2-0
-    cur.execute(
-                '''SELECT Mechanic.name,
-                Mechanic.description
-                FROM Mechanic
-                WHERE id NOT IN (
-                    SELECT mechanic
-                    FROM GenreMechanic
-                    WHERE genre IN ({replacethis})
-                )'''.format(replacethis=','.join(['?']*len(gids))), gids)
-    counts[1] = cur.fetchall()
-    cur.execute(
-                '''SELECT Setting.name,
-                Setting.description
-                FROM Setting
-                WHERE id NOT IN (
-                    SELECT setting
-                    FROM GenreSetting
-                    WHERE genre IN ({replacethis})
-                )'''.format(replacethis=','.join(['?']*len(gids))), gids)
+    query = '''SELECT Mechanic.name,
+            Mechanic.description
+            FROM Mechanic
+            WHERE id NOT IN (
+                SELECT mechanic
+                FROM GenreMechanic
+                WHERE genre IN ({replacethis})
+            )'''.format(replacethis=','.join(['?']*len(genre_ids)))
+    counts[1] = quick_query(query, genre_ids)
+    query = '''SELECT Setting.name,
+            Setting.description
+            FROM Setting
+            WHERE id NOT IN (
+                SELECT setting
+                FROM GenreSetting
+                WHERE genre IN ({replacethis})
+            )'''.format(replacethis=','.join(['?']*len(genre_ids))),
+    quick_query(query, genre_ids)
     counts[2] = cur.fetchall()
-
-    mchoice = list(random.sample(counts[1],
-                                 mechanicamount))
-    schoice = list(random.sample(counts[2], settingamount))
+    mechanic_choice = list(random.sample(counts[1],
+                           mechanic_amount))
+    setting_choice = list(random.sample(counts[2], setting_amount))
     # This is a string version of the results which can be used to save to db
     resultstosave = ''
     resultstosave += "Genres:~~"
-    for i in gchoice:
+    for i in genre_choice:
         resultstosave += '~~'
         resultstosave += i[0]
     resultstosave += "~~~~Settings:~~"
-    for i in schoice:
+    for i in setting_choice:
         resultstosave += '~~'
         resultstosave += i[0]
     resultstosave += '~~~~Mechanics:~~'
-    for i in mchoice:
+    for i in mechanic_choice:
         resultstosave += '~~'
         resultstosave += i[0]
-    return jsonify(result=[gchoice, mchoice, schoice, resultstosave])
+    return jsonify(result=[genre_choice, mechanic_choice, setting_choice,
+                           resultstosave])
     # return to js
 
 
 @app.route('/saveResults', methods=['POST'])
 def saveResults():
     data = request.get_json()  # retrieve the data sent from JavaScript
-    newdata = data['value']
+    new_data = data['value']
     if session.get('id') is not None:
         conn = sqlite3.connect(db)
         cur = conn.cursor()
         id = session['id']
         cur.execute('''UPDATE Account SET res3 = (SELECT res2 FROM Account
                     WHERE id = ?), res2 = (SELECT res1 FROM Account WHERE id
-                    = ?), res1 = ? WHERE id = ?''', (id, id, str(newdata), id))
+                    = ?), res1 = ? WHERE id = ?''',
+                    (id, id, str(new_data), id))
         conn.commit()
         conn.close()
         return jsonify(result="success")
@@ -332,12 +356,11 @@ def saveResults():
 
 @app.route('/viewres')
 def viewres():
-    conn = sqlite3.connect(db)
-    cur = conn.cursor()
     id = session.get('id')
     if id is not None:
-        cur.execute("SELECT res1, res2, res3 FROM Account WHERE id = ?", (id,))
-        res1, res2, res3 = cur.fetchall()[0]
+        data = quick_query("SELECT res1, res2, res3 FROM Account WHERE id = ?",
+                           (id,))
+        res1, res2, res3 = data[0]
         return render_template('viewres.html', res1=res1, res2=res2, res3=res3,
                                logged=check_logged())
     else:

@@ -14,9 +14,9 @@
     var mecinfo = 0
 
      window.onload = function() {
-        geninfo = {{genreinfo|length}} /*infos are lists so take length*/
-        setinfo = {{settinginfo|length}}
-        mecinfo = {{mechanicinfo|length}}
+        geninfo = {{genre_info|length}} /*infos are lists so take length*/
+        setinfo = {{setting_info|length}}
+        mecinfo = {{mechanic_info|length}}
         
         }
      
@@ -120,25 +120,26 @@
     <div class="buttongrid">
     <button id = "randomize" class="settingbutton" onclick="switchPage(geninfo, setinfo, mecinfo)">RANDOMIZE</button>
     <button id = "2d3d" class="settingbutton" onclick="changeDim()">2D</button>
-    <button id = "viewsavedres" class="settingbutton" {%if logged == True %} onclick="goToResults() " {%else%} style="background-color: #909090"{% endif %}>View Saved Results</button>
+    <button id = "viewsavedres" class="settingbutton" {%if logged == True %} onclick="goToResults() "
+     {%else%} style="background-color: #909090"{% endif %}>View Saved Results</button>
     </div>
 
 <div id = 'Genrebox' class = 'multicontainer'>
-    {{build_block(genreinfo, 'gen')}}
+    {{build_block(genre_info, 'gen')}}
     <button id="genreplus" class="plusminus" style="left:20%;" onclick="plus('genre')">
         <img src="/static/images/plusicon.png" class="buttonimg"></button>
     <button id="genreminus" class="plusminus" style="right:20%;" onclick="minus('genre')">
         <img src="/static/images/minusicon.png" class="buttonimg"></button>
 </div>
 <div id = 'Settingbox' class = 'multicontainer'>
-    {{build_block(settinginfo , 'set')}}
+    {{build_block(setting_info , 'set')}}
     <button id="settingplus" class="plusminus" style="left:20%;" onclick="plus('setting')">
         <img src="/static/images/plusicon.png" class="buttonimg"></button>
     <button id="settingminus" class="plusminus" style="right:20%;" onclick="minus('setting')">
         <img src="/static/images/minusicon.png" class="buttonimg"></button>
 </div>
 <div id = 'Mechanicbox' class = 'multicontainer'>
-    {{build_block(mechanicinfo, 'mec')}}
+    {{build_block(mechanic_info, 'mec')}}
     <button id="mechanicplus" class="plusminus" style="left:20%;" onclick="plus('mechanic')">
         <img src="/static/images/plusicon.png" class="buttonimg"></button>
     <button id="mechanicminus" class="plusminus" style="right:20%;" onclick="minus('mechanic')">
