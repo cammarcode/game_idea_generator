@@ -33,7 +33,8 @@
                 contentType: 'application/json', 
                 data: JSON.stringify({ 'value': resultstosave }),
                 dataType: 'json',
-                success: function(response) { 
+                success: function(response) {
+                    /* Activate the saved popup */
                     $('#savedpopup').fadeIn(500);
                     $('#savedpopup').fadeOut(1500);
 

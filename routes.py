@@ -7,10 +7,6 @@ import key
 from random import choice
 
 
-def remove_brackets(thing):
-    return thing[0]
-
-
 # Code from
 # https://pynative.com/python-generate-random-string/#h-how-to-create-a-random-string-in-python
 def generate_salt(length):
@@ -19,6 +15,7 @@ def generate_salt(length):
     return result_str
 
 
+# Pass this to every page, it tells the navbar and site if user is logged in
 def check_logged():
     if session.get('id') is not None:
         return True
@@ -26,6 +23,8 @@ def check_logged():
         return False
 
 
+# Checks if a variable is in sesssion, if it isn't, return "" instead
+# Used for text field default values
 def session_to_str(value):
     result = session.get(value)
     if result is None:
@@ -166,6 +165,7 @@ def results(settings):
 
 @app.route('/login')
 def login():
+    # check the user is not logged in already
     if session.get("id") is not None:
         abort(403)
     if not check_length:
@@ -189,6 +189,8 @@ def login():
 
 @app.route('/signup')
 def signup():
+    if session.get("id") is not None:
+        abort(403)
     # Check for if password or username failed, and pass that on to html
     # It will toggle the errors to visible
     username_failed = False
@@ -263,7 +265,7 @@ def loginsubmit():
     data = quick_query('SELECT id, hash, salt FROM Account WHERE username = ?',
                        (username,))[0]
     if data is not None:
-        # Hash the password plus salt, compare to db
+        # Hash the password plus salt, compare to db, if match, log in
         hasher = sha256()
         password += data[2]
         hasher.update(password.encode())
@@ -295,6 +297,7 @@ def process():
     genre_ids = [i[2] for i in genre_choice]
     # list in sql code from
     # https://stackoverflow.com/questions/5766230/select-from-sqlite-table-where-rowid-in-list-using-python-sqlite3-db-api-2-0
+    # These queries ensure that the mechanic/setting is not in the bridge table
     box_lists[1] = quick_query(
                 '''SELECT Mechanic.name,
                 Mechanic.description
