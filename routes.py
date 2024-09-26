@@ -115,7 +115,6 @@ def results(settings):
     else:
         box_lists[0] = quick_query("SELECT name, description, id FROM Genre",
                                    ())
-
     genre_choice = list(random.sample(box_lists[0], genre_amount))
     genre_ids = [i[2] for i in genre_choice]
     # list in sql code from
@@ -143,6 +142,7 @@ def results(settings):
     mechanic_choice = list(random.sample(box_lists[1],
                            mechanic_amount))
     setting_choice = list(random.sample(box_lists[2], setting_amount))
+
     # This is a string version of the results which can be used to save to db
     # ~~s will be replaced with <br> to create proper spacing
     resultstosave = ''
@@ -168,6 +168,8 @@ def results(settings):
 def login():
     if session.get("id") is not None:
         abort(403)
+    if not check_length:
+        abort(400)
     if 'failed' in session:
         account_created = session.get('account_created')
         if account_created:
@@ -259,7 +261,7 @@ def loginsubmit():
     username = request.form.get('username')
     password = request.form.get('password')
     data = quick_query('SELECT id, hash, salt FROM Account WHERE username = ?',
-                       (username,))
+                       (username,))[0]
     if data is not None:
         # Hash the password plus salt, compare to db
         hasher = sha256()
@@ -268,6 +270,7 @@ def loginsubmit():
         hashed = hasher.hexdigest()
         if hashed == data[1]:
             session['id'] = data[0]
+            print("Session id:", session["id"])
             return redirect(url_for('home'))
     session['failed'] = True
     return redirect(url_for('login'))
@@ -280,42 +283,41 @@ def process():
 
     info = list(map(int, str(settings_from_url).split("n")))
     genre_amount, setting_amount, mechanic_amount, dim = info
-    conn = sqlite3.connect(db)
-    cur = conn.cursor()
-    counts = [[], [], []]
+    box_lists = [[], [], []]
     if dim == 0:
         query = "SELECT name, description, id FROM Genre WHERE _2D = 1"
     elif dim == 1:
         query = "SELECT name, description, id FROM Genre WHERE _3D = 1"
     else:
         query = "SELECT name, description, id FROM Genre"
-    counts[0] = quick_query(query, ())
-    genre_choice = list(random.sample(counts[0], genre_amount))
+    box_lists[0] = quick_query(query, ())
+    genre_choice = list(random.sample(box_lists[0], genre_amount))
     genre_ids = [i[2] for i in genre_choice]
     # list in sql code from
     # https://stackoverflow.com/questions/5766230/select-from-sqlite-table-where-rowid-in-list-using-python-sqlite3-db-api-2-0
-    query = '''SELECT Mechanic.name,
-            Mechanic.description
-            FROM Mechanic
-            WHERE id NOT IN (
-                SELECT mechanic
-                FROM GenreMechanic
-                WHERE genre IN ({replacethis})
-            )'''.format(replacethis=','.join(['?']*len(genre_ids)))
-    counts[1] = quick_query(query, genre_ids)
-    query = '''SELECT Setting.name,
-            Setting.description
-            FROM Setting
-            WHERE id NOT IN (
-                SELECT setting
-                FROM GenreSetting
-                WHERE genre IN ({replacethis})
-            )'''.format(replacethis=','.join(['?']*len(genre_ids))),
-    quick_query(query, genre_ids)
-    counts[2] = cur.fetchall()
-    mechanic_choice = list(random.sample(counts[1],
+    box_lists[1] = quick_query(
+                '''SELECT Mechanic.name,
+                Mechanic.description
+                FROM Mechanic
+                WHERE id NOT IN (
+                    SELECT mechanic
+                    FROM GenreMechanic
+                    WHERE genre IN ({replacethis})
+                )'''.format(replacethis=','.join(['?']*len(genre_ids))),
+                genre_ids)
+    box_lists[2] = quick_query(
+                '''SELECT Setting.name,
+                Setting.description
+                FROM Setting
+                WHERE id NOT IN (
+                    SELECT setting
+                    FROM GenreSetting
+                    WHERE genre IN ({replacethis})
+                )'''.format(replacethis=','.join(['?']*len(genre_ids))),
+                genre_ids)
+    mechanic_choice = list(random.sample(box_lists[1],
                            mechanic_amount))
-    setting_choice = list(random.sample(counts[2], setting_amount))
+    setting_choice = list(random.sample(box_lists[2], setting_amount))
     # This is a string version of the results which can be used to save to db
     resultstosave = ''
     resultstosave += "Genres:~~"

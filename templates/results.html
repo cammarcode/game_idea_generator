@@ -11,6 +11,7 @@
 {% endmacro %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+<script src="js/jquery.js"></script> 
 
 <script type="text/javascript">
 
@@ -20,12 +21,12 @@
     window.onload = function() {
         value = "{{settings}}"; 
         resultstosave = "{{resultstosave}}";
+        
     }
 
 
     function saveResults(){
         if(resultstosave != "broken"){
-            console.log(resultstosave);
             $.ajax({ 
                 url: '/saveResults', 
                 type: 'POST', 
@@ -33,7 +34,8 @@
                 data: JSON.stringify({ 'value': resultstosave }),
                 dataType: 'json',
                 success: function(response) { 
-                    console.log("here we are")
+                    $('#savedpopup').fadeIn(500);
+                    $('#savedpopup').fadeOut(1500);
 
                 }, 
                 error: function(error) { 
@@ -84,7 +86,7 @@
 
 
 <div class="page">
-
+    <div id="savedpopup">Saved!</div>
     <div class="buttongrid">
     <button id = "reroll" class="settingbutton" onclick="sendData()">Reroll</button>
     <button id = "saveres" class="settingbutton" onclick="saveResults()" {%if logged == False %}style="background-color: #909090"{%endif%}>Save Results</button>
